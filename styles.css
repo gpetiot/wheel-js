@@ -295,6 +295,19 @@ h1 {
   display: none;
 }
 
+/* Choices heading styles */
+.choices-heading {
+  font-size: 1.5rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+  padding-left: 0.5rem;
+  font-weight: 600;
+  text-align: left;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 @media (max-width: 768px) {
   .app-layout {
     flex-direction: column;

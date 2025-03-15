@@ -42,6 +42,46 @@ const elements = {
 // -----------------------------
 
 /**
+ * Checks if a choice text already exists in the choices array
+ * @param {string} text - The text to check
+ * @param {Array} choices - The array of existing choices
+ * @param {number} excludeIndex - Optional index to exclude from checking (for updates)
+ * @returns {boolean} True if the text is a duplicate
+ */
+function isDuplicateChoice(text, choices, excludeIndex = -1) {
+    if (!text || !text.trim()) return false;
+    
+    const normalizedText = text.trim().toLowerCase();
+    return choices.some((choice, index) => 
+        index !== excludeIndex && 
+        choice.text.toLowerCase() === normalizedText
+    );
+}
+
+/**
+ * Shows a visual error feedback on an element
+ * @param {HTMLElement} element - The element to show feedback on
+ * @param {string} backgroundColor - The background color to use
+ * @param {string} borderColor - The border color to use
+ * @param {number} duration - Duration in ms before resetting
+ */
+function showErrorFeedback(element, backgroundColor = 'rgba(254, 226, 226, 0.5)', borderColor = '#ef4444', duration = 1000) {
+    // Store original styles
+    const originalBgColor = element.style.backgroundColor;
+    const originalBorderColor = element.style.borderColor || getComputedStyle(element).borderColor;
+    
+    // Apply error styling
+    element.style.backgroundColor = backgroundColor;
+    element.style.borderColor = borderColor;
+    
+    // Reset styling after delay
+    setTimeout(() => {
+        element.style.backgroundColor = originalBgColor;
+        element.style.borderColor = originalBorderColor;
+    }, duration);
+}
+
+/**
  * Gets a valid color for a given index
  * @param {number} index - The index to get a color for
  * @returns {string} A valid color
@@ -580,7 +620,14 @@ function updateUIState() {
 function addChoice() {
     const newChoiceText = elements.newChoiceInput.value.trim();
     if (newChoiceText) {
-        // Add the new choice
+        // Check for duplicates using the utility function
+        if (isDuplicateChoice(newChoiceText, state.choices)) {
+            // Show visual feedback
+            showErrorFeedback(elements.newChoiceInput);
+            return; // Don't add the duplicate choice
+        }
+        
+        // Add the new choice (only if it's not a duplicate)
         state.choices.push(createChoice(newChoiceText));
         elements.newChoiceInput.value = '';
         
@@ -623,9 +670,29 @@ function updateChoice(index, newText) {
     
     // If newText is provided, use it; otherwise, use the existing editValue
     const textToUse = newText || choice.editValue;
+    const trimmedText = textToUse.trim();
     
-    if (textToUse && textToUse.trim()) {
-        choice.text = textToUse.trim();
+    if (trimmedText) {
+        // Check for duplicates using the utility function
+        if (isDuplicateChoice(trimmedText, state.choices, index)) {
+            // Don't update to a duplicate choice
+            choice.editing = false;
+            
+            // Show error feedback on the list item
+            const listItem = document.querySelector(`.choice-item[data-index="${index}"]`);
+            if (listItem) {
+                showErrorFeedback(listItem);
+                setTimeout(() => renderChoicesList(), 1000); // Re-render to reset the style
+            } else {
+                renderChoicesList();
+            }
+            
+            renderWheel();
+            return;
+        }
+        
+        // Update the choice text (only if it's not a duplicate)
+        choice.text = trimmedText;
     }
     choice.editing = false;
     

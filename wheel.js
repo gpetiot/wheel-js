@@ -113,12 +113,12 @@ function toRadians(degrees) {
 }
 
 /**
- * Calculates the wheel slices data based on current choices
+ * Prepares wheel data from choices, determining occurrences and colors
  * @param {Array} choices - The array of choice objects
- * @returns {Array} Array of slice objects with properties for rendering
+ * @returns {Array} Array of objects with choice text, color, and occurrences
  */
-function calculateWheelSlices(choices) {
-    // Get choices texts
+function prepareWheelData(choices) {
+    // Get choice texts
     const choiceTexts = choices.map(choice => choice.text);
     
     // If there are no choices, return an empty array
@@ -126,69 +126,97 @@ function calculateWheelSlices(choices) {
         return [];
     }
     
-    let slices = [];
-    
-    // Special case: If there's exactly one choice, make it take the full wheel (360 degrees)
+    // Special case: If there's exactly one choice, it appears once with full wheel
     if (choiceTexts.length === 1) {
-        const choiceColor = getValidColor(0);
-        
-        slices.push({
+        return [{
             text: choiceTexts[0],
-            color: choiceColor,
-            rotate: 0,
-            sliceAngle: 360
-        });
-        
-        return slices;
+            color: getValidColor(0),
+            occurrences: 1
+        }];
     }
     
-    // If fewer than configured minimum choices, duplicate each choice to appear on opposite sides
-    if (choiceTexts.length < DEFAULTS.MIN_CHOICES_FOR_SINGLE_SLICES) {
-        // Each distinct choice gets a specific angle
-        const choiceAngle = 360 / choiceTexts.length;
-        // Each slice is half the size of the total angle for a choice
-        const sliceAngle = choiceAngle / 2;
+    // For each choice, determine color and number of occurrences
+    return choiceTexts.map((text, index) => {
+        const color = getValidColor(index);
+        // If fewer than minimum choices, each choice appears twice
+        const occurrences = choiceTexts.length < DEFAULTS.MIN_CHOICES_FOR_SINGLE_SLICES ? 2 : 1;
         
-        // Create slices with each choice appearing twice with the SAME color
-        choiceTexts.forEach((text, i) => {
-            // Determine color for this choice - get a valid color for this index
-            const choiceColor = getValidColor(i);
+        return {
+            text,
+            color,
+            occurrences
+        };
+    });
+}
+
+/**
+ * Generates wheel slices from prepared wheel data
+ * @param {Array} wheelData - Array of objects with choice text, color, and occurrences
+ * @returns {Array} Array of slice objects with properties for rendering
+ */
+function generateWheelSlices(wheelData) {
+    // Count total slices (accounting for duplicates)
+    const totalSlices = wheelData.reduce(
+        (total, item) => total + item.occurrences, 
+        0
+    );
+    
+    // Calculate angle per slice
+    const sliceAngle = 360 / totalSlices;
+    
+    // Track current rotation position
+    let currentRotation = 0;
+    
+    let slices = [];
+    // Generate slices for each wheel data item
+    wheelData.forEach(item => {
+        if (item.occurrences === 1) {
+            // Single occurrence - add one slice
+            slices.push({
+                text: item.text,
+                color: item.color,
+                rotate: currentRotation,
+                sliceAngle: sliceAngle
+            });
             
-            // Calculate base rotation for this choice
-            const baseRotation = i * choiceAngle;
-            
+            currentRotation += sliceAngle;
+        } else if (item.occurrences === 2) {
+            // Double occurrence - add two slices with same color, 180° apart
             // First occurrence
             slices.push({
-                text: text,
-                color: choiceColor,
-                rotate: baseRotation,  // At the base rotation
+                text: item.text,
+                color: item.color,
+                rotate: currentRotation,
                 sliceAngle: sliceAngle
             });
             
-            // Second occurrence (exactly 180 degrees opposite)
+            // Second occurrence, 180° opposite
             slices.push({
-                text: text,
-                color: choiceColor,  // Same color as first occurrence
-                rotate: baseRotation + 180,  // Exactly opposite (180 degrees)
+                text: item.text,
+                color: item.color,
+                rotate: (currentRotation + 180),
                 sliceAngle: sliceAngle
             });
-        });
-    } else {
-        // For sufficient choices, create one slice per choice
-        const sliceCount = choiceTexts.length;
-        const sliceAngle = 360 / sliceCount;
-        
-        slices = choiceTexts.map((text, index) => {
-            const choiceColor = getValidColor(index);
             
-            return {
-                text,
-                color: choiceColor,
-                rotate: index * sliceAngle,
-                sliceAngle
-            };
-        });
-    }
+            // Move to next position for different choice
+            currentRotation += sliceAngle;
+        }
+    });
+    
+    return slices;
+}
+
+/**
+ * Calculates the wheel slices data based on current choices
+ * @param {Array} choices - The array of choice objects
+ * @returns {Array} Array of slice objects with properties for rendering
+ */
+function calculateWheelSlices(choices) {
+    // Step 1: Prepare wheel data (choices with colors and occurrences)
+    const wheelData = prepareWheelData(choices);
+    
+    // Step 2: Generate wheel slices with proper angles and rotations
+    const slices = generateWheelSlices(wheelData);
     
     // Double-check all slices have a valid color
     slices.forEach((slice, index) => {
@@ -197,6 +225,12 @@ function calculateWheelSlices(choices) {
             slice.color = DEFAULTS.DEFAULT_COLOR;
         }
     });
+    
+    // Verify that the total angle of all slices is 360 degrees
+    const totalAngle = slices.reduce((sum, slice) => sum + slice.sliceAngle, 0);
+    if (Math.abs(totalAngle - 360) > 0.001) {
+        console.warn(`Total angle of wheel slices is ${totalAngle}, not 360 degrees`);
+    }
     
     return slices;
 }
@@ -546,8 +580,15 @@ function updateUIState() {
 function addChoice() {
     const newChoiceText = elements.newChoiceInput.value.trim();
     if (newChoiceText) {
+        // Add the new choice
         state.choices.push(createChoice(newChoiceText));
         elements.newChoiceInput.value = '';
+        
+        // Reset rotation to ensure consistent behavior
+        state.rotation = 0;
+        elements.wheel.style.transform = `rotate(0deg)`;
+        
+        // Re-render everything
         renderChoicesList();
         renderWheel();
         updateUIState();
@@ -587,6 +628,11 @@ function updateChoice(index, newText) {
         choice.text = textToUse.trim();
     }
     choice.editing = false;
+    
+    // Reset rotation to ensure consistent behavior
+    state.rotation = 0;
+    elements.wheel.style.transform = `rotate(0deg)`;
+    
     renderChoicesList();
     renderWheel();
 }
@@ -597,6 +643,12 @@ function updateChoice(index, newText) {
  */
 function deleteChoice(index) {
     state.choices.splice(index, 1);
+    
+    // Reset rotation to ensure consistent behavior
+    state.rotation = 0;
+    elements.wheel.style.transform = `rotate(0deg)`;
+    
+    // Re-render everything
     renderChoicesList();
     renderWheel();
     updateUIState();
@@ -650,6 +702,9 @@ function initializeWheel(initialChoices) {
     if (initialChoices && Array.isArray(initialChoices) && initialChoices.length > 0) {
         state.choices = initialChoices.map(text => createChoice(text));
     }
+    
+    // Reset rotation to ensure consistent behavior
+    state.rotation = 0;
     
     // Initial render
     renderChoicesList();

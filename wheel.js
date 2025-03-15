@@ -559,6 +559,8 @@ function spinWheel() {
     state.isSpinning = true;
     state.result = '';
     elements.resultMessage.style.display = 'none';
+    
+    // Update button text during spinning
     elements.spinButton.textContent = 'Spinning...';
     elements.spinButton.disabled = true;
     
@@ -578,7 +580,7 @@ function spinWheel() {
         elements.resultMessage.style.display = 'block';
         
         state.isSpinning = false;
-        elements.spinButton.textContent = 'Spin the Wheel';
+        elements.spinButton.textContent = 'Spin';
         elements.spinButton.disabled = false;
     }, DEFAULTS.SPIN_DURATION);
 }

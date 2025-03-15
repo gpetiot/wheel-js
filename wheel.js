@@ -74,7 +74,20 @@ function getValidColor(index) {
  * @returns {string} SVG path data
  */
 function createSectorPath(centerX, centerY, radius, startAngle, endAngle) {
-    // Calculate points on the circle
+    // Check if this is a full circle (or very close to it)
+    const isFullCircle = Math.abs(endAngle - startAngle - 2 * Math.PI) < 0.001;
+    
+    if (isFullCircle) {
+        // For a full circle, create a more precise circle representation
+        return [
+            `M ${centerX},${centerY - radius}`, // Start at top of circle
+            `A ${radius},${radius} 0 1 1 ${centerX - 0.001},${centerY - radius}`, // Almost full arc (clockwise)
+            `A ${radius},${radius} 0 1 1 ${centerX},${centerY - radius}`, // Complete the circle
+            'Z' // Close path
+        ].join(' ');
+    }
+    
+    // For regular sectors, calculate points on the circle
     const startX = centerX + radius * Math.cos(startAngle);
     const startY = centerY + radius * Math.sin(startAngle);
     const endX = centerX + radius * Math.cos(endAngle);
@@ -114,6 +127,20 @@ function calculateWheelSlices(choices) {
     }
     
     let slices = [];
+    
+    // Special case: If there's exactly one choice, make it take the full wheel (360 degrees)
+    if (choiceTexts.length === 1) {
+        const choiceColor = getValidColor(0);
+        
+        slices.push({
+            text: choiceTexts[0],
+            color: choiceColor,
+            rotate: 0,
+            sliceAngle: 360
+        });
+        
+        return slices;
+    }
     
     // If fewer than configured minimum choices, duplicate each choice to appear on opposite sides
     if (choiceTexts.length < DEFAULTS.MIN_CHOICES_FOR_SINGLE_SLICES) {
@@ -211,6 +238,11 @@ function createChoice(text) {
 function calculateSpinResult(rotation, slices) {
     if (slices.length === 0) return '';
     
+    // For a single choice filling the whole wheel, always return that choice
+    if (slices.length === 1 && slices[0].sliceAngle === 360) {
+        return slices[0].text;
+    }
+    
     const sliceAngle = slices[0].sliceAngle;
     
     // The modulo 360 of the final rotation tells us which slice is at the top
@@ -238,7 +270,7 @@ function calculateSpinResult(rotation, slices) {
  * @param {number} x - X coordinate
  * @param {number} y - Y coordinate
  * @param {number} rotation - Rotation in degrees
- * @param {boolean} isLargeSlice - Whether this is a large slice
+ * @param {number} sliceAngle - The angle of the slice in degrees
  * @returns {SVGTextElement} The SVG text element
  */
 function createSliceText(svgNS, text, x, y, rotation, sliceAngle) {
@@ -248,7 +280,18 @@ function createSliceText(svgNS, text, x, y, rotation, sliceAngle) {
     textElement.setAttribute("text-anchor", "middle");
     textElement.setAttribute("dominant-baseline", "middle");
     textElement.setAttribute("fill", "white");
-    textElement.setAttribute("font-size", sliceAngle > 45 ? "3" : "2.5");
+    
+    // Larger font for full circle or large slices
+    let fontSize;
+    if (sliceAngle === 360) {
+        fontSize = "4";  // Larger font for full circle
+    } else if (sliceAngle > 45) {
+        fontSize = "3";  // Larger font for bigger slices
+    } else {
+        fontSize = "2.5"; // Default size for smaller slices
+    }
+    
+    textElement.setAttribute("font-size", fontSize);
     textElement.setAttribute("font-weight", "bold");
     textElement.setAttribute("transform", `rotate(${rotation}, ${x}, ${y})`);
     textElement.setAttribute("text-shadow", "0 0 1px black");
@@ -260,7 +303,7 @@ function createSliceText(svgNS, text, x, y, rotation, sliceAngle) {
     
     // Break text into multiple lines if needed
     const words = text.split(' ');
-    if (words.length > 1 && sliceAngle < 45) {
+    if (words.length > 1 && sliceAngle < 45 && sliceAngle !== 360) {
         // For smaller slices with multiple words, break into lines
         const midpoint = Math.ceil(words.length/2);
         
@@ -433,12 +476,12 @@ function renderWheel() {
         
         // Create text for the slice
         const textAngle = startAngle + toRadians(slice.sliceAngle / 2);
-        const textRadius = radius * 0.75; // Place text at 75% of the radius
+        const textRadius = slice.sliceAngle === 360 ? 0 : radius * 0.75; // Center text for full circle
         const textX = centerX + textRadius * Math.cos(textAngle);
         const textY = centerY + textRadius * Math.sin(textAngle);
         
         // Calculate rotation for text
-        const adjustedRotation = calculateTextRotation(textAngle);
+        const adjustedRotation = slice.sliceAngle === 360 ? 0 : calculateTextRotation(textAngle);
         
         // Create the text element
         const text = createSliceText(svgNS, slice.text, textX, textY, adjustedRotation, slice.sliceAngle);

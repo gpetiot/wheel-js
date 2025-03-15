@@ -284,7 +284,7 @@ function createSliceText(svgNS, text, x, y, rotation, sliceAngle) {
     // Larger font for full circle or large slices
     let fontSize;
     if (sliceAngle === 360) {
-        fontSize = "4";  // Larger font for full circle
+        fontSize = "3.5";  // Slightly smaller font for full circle near border
     } else if (sliceAngle > 45) {
         fontSize = "3";  // Larger font for bigger slices
     } else {
@@ -476,10 +476,19 @@ function renderWheel() {
         
         // Create text for the slice
         const textAngle = startAngle + toRadians(slice.sliceAngle / 2);
-        const textRadius = slice.sliceAngle === 360 ? 0 : radius * 0.75; // Center text for full circle
-        const textX = centerX + textRadius * Math.cos(textAngle);
-        const textY = centerY + textRadius * Math.sin(textAngle);
-        
+        let textX, textY;
+
+        if (slice.sliceAngle === 360) {
+            // For full circle (single choice), position text at the top
+            textX = centerX;
+            textY = centerY - (radius * 0.6);
+        } else {
+            // For normal slices, calculate position along the radius
+            const textRadius = radius * 0.75;
+            textX = centerX + textRadius * Math.cos(textAngle);
+            textY = centerY + textRadius * Math.sin(textAngle);
+        }
+
         // Calculate rotation for text
         const adjustedRotation = slice.sliceAngle === 360 ? 0 : calculateTextRotation(textAngle);
         

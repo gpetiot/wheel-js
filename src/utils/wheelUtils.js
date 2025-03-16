@@ -248,23 +248,49 @@ export function calculateSpinResult(rotation, slices) {
   if (slices.length === 0) return '';
   
   // For a single choice filling the whole wheel, always return that choice
-  if (slices.length === 1 && slices[0].sliceAngle === 360) {
-      return slices[0].text;
+  if (slices.length === 1) {
+    return slices[0].text;
   }
   
-  const sliceAngle = slices[0].sliceAngle;
+  // Normalize the rotation to be between 0 and 360 degrees
+  let normalizedRotation = rotation % 360;
+  if (normalizedRotation < 0) normalizedRotation += 360;
   
-  // The modulo 360 of the final rotation tells us which slice is at the top
-  const modRotation = rotation % 360;
+  // The indicator is at 0 degrees (top position)
+  // When the wheel rotates clockwise, we need to see which slice is now at the top
   
-  // The indicator points to the top (0 degrees), so we need to find which slice is there
-  // We add 360 to ensure positive values, then modulo 360 again
-  const normalizedRotation = (360 - modRotation) % 360;
+  // Iterate through each slice to check which one contains the indicator angle (0°)
+  // after the wheel has rotated by normalizedRotation degrees
   
-  // Find which slice corresponds to this rotation
-  const resultIndex = Math.floor(normalizedRotation / sliceAngle);
+  for (let i = 0; i < slices.length; i++) {
+    const slice = slices[i];
+    
+    // Calculate the rotated position of this slice's start and end angles
+    // When the wheel rotates clockwise by normalizedRotation, 
+    // the slice positions effectively rotate counter-clockwise
+    let rotatedStartAngle = (slice.rotate - normalizedRotation) % 360;
+    if (rotatedStartAngle < 0) rotatedStartAngle += 360;
+    
+    let rotatedEndAngle = (rotatedStartAngle + slice.sliceAngle) % 360;
+    
+    // The indicator is at 0 degrees (top position)
+    // Check if 0 degrees falls within this slice's rotated range
+    
+    // Normal case: start angle is less than end angle
+    if (rotatedStartAngle < rotatedEndAngle) {
+      if (rotatedStartAngle <= 0 && 0 < rotatedEndAngle) {
+        return slice.text;
+      }
+    } 
+    // Edge case: slice wraps around 360/0 degrees (end angle is less than start angle)
+    else {
+      if (rotatedStartAngle <= 0 || 0 < rotatedEndAngle) {
+        return slice.text;
+      }
+    }
+  }
   
-  // Get the result text - make sure we don't exceed array bounds
-  const safeIndex = resultIndex % slices.length;
-  return slices[safeIndex].text;
-} 
+  // If we get here, something went wrong - return the first slice as a fallback
+  console.warn('Could not determine result slice, using first slice as fallback');
+  return slices[0].text;
+}

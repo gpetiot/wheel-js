@@ -76,12 +76,8 @@ const Wheel = ({ wheelSlices, rotation }) => {
   const centerY = 50;
   const radius = 50;
   
-  const wheelStyle = {
-    transform: `rotate(${rotation}deg)`,
-  };
-  
   return (
-    <svg width="100%" height="100%" viewBox="0 0 100 100" style={wheelStyle}>
+    <svg width="100%" height="100%" viewBox="0 0 100 100">
       {wheelSlices.map((slice, index) => {
         // Calculate angles in radians
         const startAngle = toRadians(slice.rotate);

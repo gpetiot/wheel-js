@@ -134,8 +134,8 @@ const WheelSpinner = () => {
         <div className="wheel-section">
           <div className="wheel-container">
             <div className="wheel-indicator"></div>
-            <div className="wheel">
-              <Wheel wheelSlices={wheelSlices} rotation={rotation} />
+            <div className="wheel" style={{ transform: `rotate(${rotation}deg)` }}>
+              <Wheel wheelSlices={wheelSlices} rotation={0} />
             </div>
             <button 
               className="spin-button"

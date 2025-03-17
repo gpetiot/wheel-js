@@ -67,7 +67,7 @@ const EmptyWheelMessage = () => (
 );
 
 // Main Wheel component
-const Wheel = ({ wheelSlices, rotation }) => {
+const Wheel = ({ wheelSlices, rotation, highlightIndex = -1 }) => {
   if (wheelSlices.length === 0) {
     return <EmptyWheelMessage />;
   }
@@ -78,6 +78,20 @@ const Wheel = ({ wheelSlices, rotation }) => {
   
   return (
     <svg width="100%" height="100%" viewBox="0 0 100 100">
+      {/* Zero degree marker - a small circle at exactly 0 degrees (top position) */}
+      <circle cx={centerX} cy={centerY - radius} r="2" fill="blue" stroke="white" strokeWidth="1" />
+      
+      {/* Zero degree reference line */}
+      <line 
+        x1={centerX} 
+        y1={centerY} 
+        x2={centerX} 
+        y2={centerY - radius - 5} 
+        stroke="blue" 
+        strokeWidth="1" 
+        strokeDasharray="2,2" 
+      />
+      
       {wheelSlices.map((slice, index) => {
         // Calculate angles in radians
         const startAngle = toRadians(slice.rotate);
@@ -106,6 +120,11 @@ const Wheel = ({ wheelSlices, rotation }) => {
           ? 0 
           : calculateTextRotation(textAngle);
         
+        // Add index number to each slice for debugging
+        const middleRadius = radius * 0.4;
+        const middleX = centerX + middleRadius * Math.cos(textAngle);
+        const middleY = centerY + middleRadius * Math.sin(textAngle);
+        
         return (
           <React.Fragment key={index}>
             <path
@@ -122,6 +141,19 @@ const Wheel = ({ wheelSlices, rotation }) => {
               rotation={adjustedRotation}
               sliceAngle={slice.sliceAngle}
             />
+            {/* Debug index number on each slice */}
+            <text
+              x={middleX}
+              y={middleY}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fill="black"
+              fontSize="2"
+              fontWeight="bold"
+              transform={`rotate(${adjustedRotation}, ${middleX}, ${middleY})`}
+            >
+              {index}
+            </text>
           </React.Fragment>
         );
       })}

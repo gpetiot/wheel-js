@@ -109,6 +109,22 @@
   animation: fadeIn 0.5s ease-in;
 }
 
+.show-debug-button {
+  margin-top: 16px;
+  padding: 8px 16px;
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  color: #475569;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.show-debug-button:hover {
+  background-color: #e2e8f0;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -237,4 +253,47 @@
   border-color: #3b82f6;
   outline: none;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-} 
+}
+
+/* Debug Panel Styling */
+.debug-panel {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  font-size: 0.9rem;
+}
+
+.debug-panel h3 {
+  margin-top: 0;
+  color: #334155;
+}
+
+.debug-panel h4 {
+  margin-bottom: 10px;
+  color: #475569;
+}
+
+.slice-debug-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.debug-info {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 8px 12px;
+  transition: all 0.2s ease;
+}
+
+.debug-active {
+  background: #f0f9ff;
+  border-color: #bae6fd;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.3);
+}

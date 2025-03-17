@@ -1,0 +1,209 @@
+/* Debug Panel Styling */
+.debug-panel {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  font-size: 0.9rem;
+  color: #334155;
+}
+
+.debug-panel h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #0f172a;
+  font-size: 1.2rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 8px;
+}
+
+.debug-section {
+  margin-bottom: 16px;
+}
+
+.debug-panel h4 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: #475569;
+  font-size: 1rem;
+}
+
+.debug-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+.debug-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.debug-value {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.debug-state {
+  color: #0284c7;
+}
+
+.slice-debug-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+
+.debug-info {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 10px 12px;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.debug-active {
+  background: #f0f9ff;
+  border-color: #bae6fd;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.3);
+}
+
+.debug-slice-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+}
+
+.debug-slice-text {
+  color: #0f172a;
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.debug-slice-position, 
+.debug-slice-indicator {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.debug-indicator-value {
+  font-weight: 600;
+}
+
+.debug-indicator-value.positive {
+  color: #22c55e;
+}
+
+.debug-indicator-value.negative {
+  color: #ef4444;
+}
+
+.debug-explanation {
+  background: #f1f5f9;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.debug-explanation p {
+  margin: 0 0 8px 0;
+}
+
+.debug-explanation p:last-child {
+  margin-bottom: 0;
+}
+
+.debug-hide-button {
+  background: #e2e8f0;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.debug-hide-button:hover {
+  background: #cbd5e1;
+}
+
+/* Computation Steps Visualization */
+.computation-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+  background: #fff;
+  border-radius: 6px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.computation-step {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  border-radius: 4px;
+  background: #f8fafc;
+  border-left: 3px solid #0ea5e9;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #0ea5e9;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.step-label {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.step-value {
+  font-family: monospace;
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #0f172a;
+  font-weight: 500;
+  margin: 4px 0;
+}
+
+.step-description {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-style: italic;
+} 

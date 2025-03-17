@@ -52,14 +52,24 @@ export function getSliceAtIndicator(wheelSlices, rotation) {
  * @returns {boolean} True if the slice contains 0°
  */
 export function sliceContainsZeroDegree(slice, rotation) {
+  // Special case: if the slice angle is 360°, it always contains 0°
+  if (slice.sliceAngle >= 360) {
+    return true;
+  }
+  
   let startAngle = (slice.rotate - rotation) % 360;
   if (startAngle < 0) startAngle += 360;
   
   let endAngle = (startAngle + slice.sliceAngle) % 360;
   
-  return startAngle <= endAngle
-    ? (0 >= startAngle && 0 < endAngle)
-    : (0 >= startAngle || 0 < endAngle);
+  // Check if 0° is within this slice
+  if (startAngle <= endAngle) {
+    // Normal case: slice doesn't cross the 0/360 boundary
+    return (0 >= startAngle && 0 < endAngle);
+  } else {
+    // Edge case: slice crosses the 0/360 boundary
+    return (0 >= startAngle || 0 < endAngle);
+  }
 }
 
 /**
@@ -71,6 +81,11 @@ export function sliceContainsZeroDegree(slice, rotation) {
 export function calculateSlicePosition(slice, rotation) {
   let startAngle = (slice.rotate - rotation) % 360;
   if (startAngle < 0) startAngle += 360;
+  
+  // Special case: if the slice angle is 360°, set endAngle to 360
+  if (slice.sliceAngle >= 360) {
+    return { startAngle, endAngle: 360 };
+  }
   
   let endAngle = (startAngle + slice.sliceAngle) % 360;
   

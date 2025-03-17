@@ -20,10 +20,12 @@ describe('wheelUtils', () => {
       }
 
       // Verify that the last slice connects back to the first slice
-      const lastAngle = ((slices[slices.length - 1].rotate % 360) + 360) % 360;
-      const firstAngle = ((slices[0].rotate % 360) + 360) % 360;
-      expect(Math.abs(lastAngle - 360 + firstAngle)).toBeLessThan(0.001);
+      const lastSlice = slices[slices.length - 1];
+      const firstSlice = slices[0];
+      const lastAngle = ((lastSlice.rotate + lastSlice.sliceAngle) % 360) + 360;
+      const firstAngle = ((firstSlice.rotate % 360) + 360) % 360;
       expect(firstAngle).toBe(0);
+      expect(lastAngle).toBe(360);
     };
 
     const color1 = COLORS[0];

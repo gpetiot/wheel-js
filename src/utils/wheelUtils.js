@@ -280,13 +280,13 @@ export function calculateRotatedSlicePositions(wheelSlices, rotation) {
   if (normalizedRotation < 0) normalizedRotation += 360;
   
   // IMPORTANT: The wheel rotates clockwise (positive rotation values)
-  // When the wheel rotates clockwise, the slices move backward relative to the fixed indicator
-  // So we subtract the rotation from each slice's original position
+  // When the wheel rotates clockwise, the slices move clockwise
+  // So we add the rotation to each slice's original position
   
   return wheelSlices.map((slice, i) => {
     // Calculate slice position after rotation
-    // Formula: (original position - rotation) to account for clockwise movement
-    let sliceStartAngle = (slice.rotate - normalizedRotation) % 360;
+    // Formula: (original position + rotation) to account for clockwise movement
+    let sliceStartAngle = (slice.rotate + normalizedRotation) % 360;
     if (sliceStartAngle < 0) sliceStartAngle += 360;
     
     let sliceEndAngle = (sliceStartAngle + slice.sliceAngle) % 360;

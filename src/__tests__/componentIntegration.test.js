@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 import { 
   prepareWheelSlices, 
   getSliceAtIndicator, 
-  logWheelTestInfo, 
   verifyResult 
 } from './utils/testUtils';
 
@@ -70,11 +69,6 @@ describe('Component Integration Tests', () => {
             // Get result using the component's implementation
             const componentResult = calculateRotatedSliceAtIndicator(wheelSlices, rotation);
             
-            // Log test information
-            console.log(`\n--- ${testCase.name} with rotation ${rotation}° ---`);
-            console.log(`Utility function result: index ${utilityResult.index} (${utilityResult.text})`);
-            console.log(`Component implementation result: index ${componentResult} (${wheelSlices[componentResult].text})`);
-            
             // Verify that both implementations give the same result
             expect(utilityResult.index).toBe(componentResult);
             expect(utilityResult.text).toBe(wheelSlices[componentResult].text);
@@ -109,11 +103,6 @@ describe('Component Integration Tests', () => {
         // Get result using the component's implementation
         const componentResult = calculateRotatedSliceAtIndicator(wheelSlices, edgeCase.rotation);
         
-        // Log test information
-        console.log(`\n--- ${edgeCase.description} (${edgeCase.rotation}°) ---`);
-        console.log(`Utility function result: index ${utilityResult.index} (${utilityResult.text})`);
-        console.log(`Component implementation result: index ${componentResult} (${wheelSlices[componentResult].text})`);
-        
         // Verify that both implementations give the same result
         expect(utilityResult.index).toBe(componentResult);
         
@@ -122,8 +111,6 @@ describe('Component Integration Tests', () => {
           startAngle: (wheelSlices[componentResult].rotate - edgeCase.rotation) % 360,
           endAngle: ((wheelSlices[componentResult].rotate - edgeCase.rotation) % 360 + wheelSlices[componentResult].sliceAngle) % 360
         };
-        
-        console.log(`Winning slice position: ${startAngle.toFixed(2)}° to ${endAngle.toFixed(2)}°`);
         
         // Check if the slice contains 0°
         const containsZero = startAngle <= endAngle

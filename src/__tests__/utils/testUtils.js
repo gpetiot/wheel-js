@@ -93,37 +93,6 @@ export function calculateSlicePosition(slice, rotation) {
 }
 
 /**
- * Logs detailed information about a wheel test
- * @param {string} testName - Name of the test
- * @param {Array} wheelSlices - Array of wheel slices
- * @param {number} rotation - Rotation angle in degrees
- * @param {Object} result - Result object with text and index
- */
-export function logWheelTestInfo(testName, wheelSlices, rotation, result) {
-  console.log(`\n--- ${testName} with rotation ${rotation}° ---`);
-  console.log(`Number of slices: ${wheelSlices.length}`);
-  console.log(`Slice angles: ${wheelSlices.map(s => s.sliceAngle).join(', ')}°`);
-  
-  // Log each slice's position after rotation
-  console.log('\nSlice positions after rotation:');
-  wheelSlices.forEach((slice, i) => {
-    const { startAngle, endAngle } = calculateSlicePosition(slice, rotation);
-    const isWinningSlice = i === result.index;
-    
-    console.log(
-      `Slice ${i} (${slice.text}): ${startAngle.toFixed(2)}° to ${endAngle.toFixed(2)}° ${isWinningSlice ? '← WINNER' : ''}`
-    );
-    
-    // Check if this slice contains 0°
-    if (sliceContainsZeroDegree(slice, rotation)) {
-      console.log(`  ✓ This slice contains 0° (indicator position)`);
-    }
-  });
-  
-  console.log(`\nResult: ${result.text} (index: ${result.index})`);
-}
-
-/**
  * Common test cases for wheel rotation
  */
 export const commonTestCases = [

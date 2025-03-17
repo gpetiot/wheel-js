@@ -45,7 +45,7 @@ const WheelSpinner = () => {
           setChoices(initialChoices.map(text => createChoice(text)));
         }
       } catch (e) {
-        console.warn('Invalid choices parameter in URL');
+        // Silently handle invalid choices parameter
       }
     }
   }, []);
@@ -204,12 +204,6 @@ const WheelSpinner = () => {
       setResult(resultText);
       setShowResult(true);
       setIsSpinning(false);
-      
-      // Log debug info
-      console.log(`Final rotation: ${rotation.toFixed(2)}°`);
-      console.log(`Normalized: ${(rotation % 360).toFixed(2)}°`);
-      console.log(`Winning index: ${winningIndex}`);
-      console.log(`Winning text: ${resultText}`);
     };
     
     if (wheelElement) {

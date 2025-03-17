@@ -1,7 +1,6 @@
 import { 
   prepareWheelSlices, 
   getSliceAtIndicator, 
-  logWheelTestInfo, 
   verifyResult 
 } from './utils/testUtils';
 import { DEFAULTS } from '../utils/constants';
@@ -68,9 +67,6 @@ describe('Deterministic Wheel Rotation Tests', () => {
           // Get the slice at the indicator position
           const result = getSliceAtIndicator(wheelSlices, rotation);
           
-          // Log detailed information about the test
-          logWheelTestInfo(`${scenario.name}`, wheelSlices, rotation, result);
-          
           // Verify the result
           verifyResult(result, wheelSlices, rotation, expect);
         });
@@ -87,17 +83,8 @@ describe('Deterministic Wheel Rotation Tests', () => {
         // Get the slice at the indicator position after spin
         const result = getSliceAtIndicator(wheelSlices, finalRotation);
         
-        console.log(`\n--- ${scenario.name} with simulated spin ---`);
-        console.log(`Initial rotation: ${initialRotation}°`);
-        console.log(`Spin amount: ${FIXED_SPIN_AMOUNT}°`);
-        console.log(`Final rotation: ${finalRotation}°`);
-        console.log(`Result: ${result.text} (index: ${result.index})`);
-        
         // Verify the result
         verifyResult(result, wheelSlices, finalRotation, expect);
-        
-        // Log the position of each slice after the spin
-        logWheelTestInfo(`${scenario.name} after spin`, wheelSlices, finalRotation, result);
       });
     });
   });

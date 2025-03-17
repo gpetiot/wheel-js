@@ -2,8 +2,7 @@ import {
   commonTestCases, 
   commonRotations, 
   prepareWheelSlices, 
-  getSliceAtIndicator, 
-  logWheelTestInfo, 
+  getSliceAtIndicator,
   verifyResult 
 } from './utils/testUtils';
 
@@ -19,9 +18,6 @@ describe('Basic Wheel Rotation Tests', () => {
         test(`Rotation ${rotation}°`, () => {
           // Calculate the result
           const result = getSliceAtIndicator(wheelSlices, rotation);
-          
-          // Log test information
-          logWheelTestInfo(testCase.name, wheelSlices, rotation, result);
           
           // Verify the result
           verifyResult(result, wheelSlices, rotation, expect);

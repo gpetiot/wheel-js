@@ -1,7 +1,6 @@
 import { 
   prepareWheelSlices, 
   getSliceAtIndicator, 
-  logWheelTestInfo, 
   verifyResult,
   calculateSlicePosition
 } from './utils/testUtils';
@@ -30,8 +29,6 @@ describe('Wheel Rotation Edge Cases', () => {
       const rotation = 0;
       const result = getSliceAtIndicator(wheelSlices, rotation);
       
-      logWheelTestInfo('Slice exactly at 0° boundary', wheelSlices, rotation, result);
-      
       // The first slice should be the winner
       expect(result.index).toBe(0);
       verifyResult(result, wheelSlices, rotation, expect);
@@ -44,8 +41,6 @@ describe('Wheel Rotation Edge Cases', () => {
       const rotation = 90.01;
       const result = getSliceAtIndicator(wheelSlices, rotation);
       
-      logWheelTestInfo('Slice ending just before 0°', wheelSlices, rotation, result);
-      
       verifyResult(result, wheelSlices, rotation, expect);
     });
     
@@ -55,8 +50,6 @@ describe('Wheel Rotation Edge Cases', () => {
       // will start at 315° and end at 45°, crossing the boundary
       const rotation = 45;
       const result = getSliceAtIndicator(wheelSlices, rotation);
-      
-      logWheelTestInfo('Slice crossing the 0°/360° boundary', wheelSlices, rotation, result);
       
       verifyResult(result, wheelSlices, rotation, expect);
     });
@@ -76,9 +69,6 @@ describe('Wheel Rotation Edge Cases', () => {
         // Calculate the equivalent positive rotation
         const positiveRotation = rotation % 360;
         const normalizedRotation = positiveRotation < 0 ? positiveRotation + 360 : positiveRotation;
-        
-        console.log(`\n--- Negative rotation ${rotation}° (normalized to ${normalizedRotation}°) ---`);
-        logWheelTestInfo(`Negative rotation ${rotation}°`, wheelSlices, rotation, result);
         
         verifyResult(result, wheelSlices, rotation, expect);
         
@@ -103,9 +93,6 @@ describe('Wheel Rotation Edge Cases', () => {
         
         // Calculate the normalized rotation
         const normalizedRotation = rotation % 360;
-        
-        console.log(`\n--- Large rotation ${rotation}° (normalized to ${normalizedRotation}°) ---`);
-        logWheelTestInfo(`Large rotation ${rotation}°`, wheelSlices, rotation, result);
         
         verifyResult(result, wheelSlices, rotation, expect);
         

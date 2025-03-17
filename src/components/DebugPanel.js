@@ -149,8 +149,12 @@ const DebugPanel = ({
         </p>
         <p>
           <strong>Computation:</strong> For each slice, we calculate its position after rotation by 
-          subtracting the normalized rotation from its original position. The slice containing 
-          the 0° position is highlighted and selected as the winner.
+          subtracting the normalized rotation from its original position. This is because when the wheel 
+          rotates clockwise (positive rotation), the slices move backward relative to the fixed indicator.
+        </p>
+        <p>
+          <strong>Direction consistency:</strong> Both the visual animation and the mathematical computation 
+          use the same direction convention: positive rotation values = clockwise rotation.
         </p>
       </div>
       

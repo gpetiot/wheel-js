@@ -169,9 +169,9 @@ const WheelSpinner = () => {
     // This is a real spin, not a reset
     isResetRef.current = false;
     
-    // Calculate random rotation
+    // Calculate random rotation - ALWAYS POSITIVE for clockwise rotation
     const randomSpins = DEFAULTS.MIN_SPINS + Math.random() * (DEFAULTS.MAX_SPINS - DEFAULTS.MIN_SPINS);
-    const newRotation = rotation + (randomSpins * 360);
+    const newRotation = rotation + (randomSpins * 360); // Positive = clockwise
     
     // Apply the rotation visually (this will animate in CSS)
     setRotation(newRotation);
@@ -235,11 +235,16 @@ const WheelSpinner = () => {
     let normalizedRotation = rotation % 360;
     if (normalizedRotation < 0) normalizedRotation += 360;
     
+    // IMPORTANT: The wheel rotates clockwise (positive rotation values)
+    // When the wheel rotates clockwise, the slices move backward relative to the fixed indicator
+    // So we subtract the rotation from each slice's original position
+    
     // Check each slice to see which one contains the indicator (0°)
     for (let i = 0; i < wheelSlices.length; i++) {
       const slice = wheelSlices[i];
       
       // Calculate slice position after rotation
+      // Formula: (original position - rotation) to account for clockwise movement
       let sliceStartAngle = (slice.rotate - normalizedRotation) % 360;
       if (sliceStartAngle < 0) sliceStartAngle += 360;
       
@@ -268,8 +273,11 @@ const WheelSpinner = () => {
     let normalizedRotation = rotation % 360;
     if (normalizedRotation < 0) normalizedRotation += 360;
     
+    // IMPORTANT: Using the same formula as calculateRotatedSliceAtIndicator
+    // to ensure consistency between the computation and the debug display
     return wheelSlices.map((slice, i) => {
       // Calculate slice position after rotation
+      // Formula: (original position - rotation) to account for clockwise movement
       let sliceStartAngle = (slice.rotate - normalizedRotation) % 360;
       if (sliceStartAngle < 0) sliceStartAngle += 360;
       

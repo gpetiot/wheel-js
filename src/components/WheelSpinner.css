@@ -104,14 +104,37 @@
 }
 
 .result-message {
+  width: 100%;
+  max-width: 400px;
+  margin: 1.5rem auto;
   padding: 1rem;
-  background-color: #ecfdf5;
-  border: 1px solid #10b981;
-  border-radius: 0.5rem;
-  color: #047857;
-  font-weight: 500;
   text-align: center;
-  animation: fadeIn 0.5s ease-in;
+  font-size: 1.5rem;
+  color: #0f172a;
+  font-weight: 500;
+  animation: fadeIn 0.5s ease-in, pulseScale 1s ease-in-out;
+  position: relative;
+}
+
+.result-message::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  width: 80%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.5), transparent);
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+.result-message strong {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2563eb;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .show-debug-button {
@@ -133,6 +156,12 @@
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes pulseScale {
+  0% { transform: scale(0.95); opacity: 0; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 /* Choices Table Section */

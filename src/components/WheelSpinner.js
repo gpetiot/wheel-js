@@ -346,7 +346,8 @@ const WheelSpinner = () => {
           
           {showResult && (
             <div className="result-message">
-              Result: <strong>{result}</strong>
+              The wheel has chosen:
+              <strong>{result}</strong>
             </div>
           )}
           

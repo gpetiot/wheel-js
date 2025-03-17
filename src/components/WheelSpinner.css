@@ -60,14 +60,14 @@
 
 .wheel-indicator {
   position: absolute;
-  top: -16px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 50%;
+  right: -16px;
+  transform: translateY(-50%);
   width: 0;
   height: 0;
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-top: 24px solid #ef4444;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-right: 24px solid #ef4444;
   z-index: 10;
 }
 

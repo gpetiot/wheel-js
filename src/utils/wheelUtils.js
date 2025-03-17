@@ -182,7 +182,7 @@ export function generateWheelSlices(wheelData) {
           slices.push({
               text: item.text,
               color: item.color,
-              rotate: (currentRotation + 180),
+              rotate: (currentRotation + 180) % 360,
               sliceAngle: sliceAngle
           });
           
@@ -190,7 +190,7 @@ export function generateWheelSlices(wheelData) {
           currentRotation += sliceAngle;
       }
   });
-  
+
   return slices;
 }
 
@@ -202,18 +202,22 @@ export function generateWheelSlices(wheelData) {
 export function calculateWheelSlices(choices) {
   // Step 1: Prepare wheel data (choices with colors and occurrences)
   const wheelData = prepareWheelData(choices);
-  
+
   // Step 2: Generate wheel slices with proper angles and rotations
   const slices = generateWheelSlices(wheelData);
-  
+
   // Double-check all slices have a valid color
   slices.forEach((slice, index) => {
-      if (!slice.color || slice.color === 'undefined' || typeof slice.color !== 'string') {
-          console.warn(`Missing color detected for slice ${index}, using default`);
-          slice.color = DEFAULTS.DEFAULT_COLOR;
-      }
+    if (
+      !slice.color ||
+      slice.color === "undefined" ||
+      typeof slice.color !== "string"
+    ) {
+      console.warn(`Missing color detected for slice ${index}, using default`);
+      slice.color = DEFAULTS.DEFAULT_COLOR;
+    }
   });
-  
+
   if (slices.length === 0) {
     return [];
   }
@@ -221,10 +225,18 @@ export function calculateWheelSlices(choices) {
   // Verify that the total angle of all slices is 360 degrees
   const totalAngle = slices.reduce((sum, slice) => sum + slice.sliceAngle, 0);
   if (Math.abs(totalAngle - 360) > 0.001) {
-      console.warn(`Total angle of wheel slices is ${totalAngle}, not 360 degrees`);
+    console.warn(
+      `Total angle of wheel slices is ${totalAngle}, not 360 degrees`
+    );
   }
-  
-  return slices;
+
+  // Sort slices by rotation angle in clockwise order
+  return slices.sort((a, b) => {
+    // Normalize angles to 0-360 range for comparison
+    const angleA = ((a.rotate % 360) + 360) % 360;
+    const angleB = ((b.rotate % 360) + 360) % 360;
+    return angleA - angleB;
+  });
 }
 
 /**

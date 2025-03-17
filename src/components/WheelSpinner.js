@@ -327,7 +327,7 @@ const WheelSpinner = () => {
     <div className="container">
       <h1>Wheel Spinner</h1>
       
-      <div className="app-layout">
+      <div className={`app-layout ${showDebug ? 'content-with-debug-panel' : 'content-without-debug-panel'}`}>
         {/* Wheel Section */}
         <div className="wheel-section">
           <div className="wheel-container">
@@ -358,27 +358,6 @@ const WheelSpinner = () => {
               <strong>{result}</strong>
             </div>
           )}
-          
-          {/* Debug Panel */}
-          {showDebug ? (
-            <DebugPanel 
-              rotation={rotation}
-              wheelSlices={wheelSlices}
-              isSpinning={isSpinning}
-              showResult={showResult}
-              resultIndex={resultIndex}
-              resultText={result}
-              getRotatedSlicePositions={getRotatedSlicePositions}
-              onHideDebug={() => setShowDebug(false)}
-            />
-          ) : (
-            <button 
-              className="show-debug-button"
-              onClick={() => setShowDebug(true)}
-            >
-              Show Debug Panel
-            </button>
-          )}
         </div>
         
         {/* Choices List */}
@@ -390,6 +369,19 @@ const WheelSpinner = () => {
           onChoiceAdd={handleChoiceAdd}
         />
       </div>
+      
+      {/* Debug Panel - now rendered outside the main layout */}
+      <DebugPanel 
+        rotation={rotation}
+        wheelSlices={wheelSlices}
+        isSpinning={isSpinning}
+        showResult={showResult}
+        resultIndex={resultIndex}
+        resultText={result}
+        getRotatedSlicePositions={getRotatedSlicePositions}
+        onHideDebug={() => setShowDebug(!showDebug)}
+        isVisible={showDebug}
+      />
     </div>
   );
 };

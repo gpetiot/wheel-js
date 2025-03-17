@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  transition: margin-left 0.3s ease;
 }
 
 @media (min-width: 768px) {
@@ -16,6 +17,13 @@
   .table-section {
     flex: 1;
   }
+}
+
+.container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  transition: margin-left 0.3s ease;
 }
 
 /* Wheel Section */
@@ -139,19 +147,7 @@
 }
 
 .show-debug-button {
-  margin-top: 16px;
-  padding: 8px 16px;
-  background-color: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  color: #475569;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.show-debug-button:hover {
-  background-color: #e2e8f0;
+  display: none;
 }
 
 @keyframes fadeIn {

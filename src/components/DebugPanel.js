@@ -13,7 +13,8 @@ const DebugPanel = ({
   resultIndex, 
   resultText,
   getRotatedSlicePositions,
-  onHideDebug 
+  onHideDebug,
+  isVisible
 }) => {
   // Normalize the rotation to be between 0 and 360 degrees
   const normalizedRotation = ((rotation % 360) + 360) % 360;
@@ -54,117 +55,130 @@ const DebugPanel = ({
   ] : [];
   
   return (
-    <div className="debug-panel">
-      <h3>Debug Panel</h3>
-      
-      {/* Wheel State */}
-      <div className="debug-section">
-        <h4>Wheel State</h4>
-        <div className="debug-grid">
-          <div className="debug-item">
-            <span>Current Rotation:</span>
-            <span className="debug-value">{rotation.toFixed(2)}°</span>
-          </div>
-          <div className="debug-item">
-            <span>Normalized (0-360°):</span>
-            <span className="debug-value">{normalizedRotation.toFixed(2)}°</span>
-          </div>
-          <div className="debug-item">
-            <span>State:</span>
-            <span className="debug-value debug-state">
-              {isSpinning ? "Spinning" : (showResult ? "Result Shown" : "Ready")}
-            </span>
-          </div>
-        </div>
-      </div>
-      
-      {/* Result Information (when available) */}
-      {showResult && (
+    <>
+      <div className={`debug-panel ${!isVisible ? 'hidden' : ''}`}>
+        <h3>
+          Debug Panel
+          <button 
+            className="debug-hide-button"
+            onClick={onHideDebug}
+            aria-label="Hide debug panel"
+          >
+            ×
+          </button>
+        </h3>
+        
+        {/* Wheel State */}
         <div className="debug-section">
-          <h4>Result</h4>
+          <h4>Wheel State</h4>
           <div className="debug-grid">
             <div className="debug-item">
-              <span>Winning Index:</span>
-              <span className="debug-value">{resultIndex}</span>
+              <span>Current Rotation:</span>
+              <span className="debug-value">{rotation.toFixed(2)}°</span>
             </div>
             <div className="debug-item">
-              <span>Winning Text:</span>
-              <span className="debug-value">{resultText}</span>
+              <span>Normalized (0-360°):</span>
+              <span className="debug-value">{normalizedRotation.toFixed(2)}°</span>
+            </div>
+            <div className="debug-item">
+              <span>State:</span>
+              <span className="debug-value debug-state">
+                {isSpinning ? "Spinning" : (showResult ? "Result Shown" : "Ready")}
+              </span>
             </div>
           </div>
         </div>
-      )}
-      
-      {/* Computation Visualization */}
-      {winningSlice && (
-        <div className="debug-section">
-          <h4>Winner Computation</h4>
-          <div className="computation-steps">
-            {computationSteps.map((step, index) => (
-              <div key={index} className="computation-step">
-                <div className="step-header">
-                  <span className="step-number">{index + 1}</span>
-                  <span className="step-label">{step.label}</span>
+        
+        {/* Result Information (when available) */}
+        {showResult && (
+          <div className="debug-section">
+            <h4>Result</h4>
+            <div className="debug-grid">
+              <div className="debug-item">
+                <span>Winning Index:</span>
+                <span className="debug-value">{resultIndex}</span>
+              </div>
+              <div className="debug-item">
+                <span>Winning Text:</span>
+                <span className="debug-value">{resultText}</span>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Computation Visualization */}
+        {winningSlice && (
+          <div className="debug-section">
+            <h4>Winner Computation</h4>
+            <div className="computation-steps">
+              {computationSteps.map((step, index) => (
+                <div key={index} className="computation-step">
+                  <div className="step-header">
+                    <span className="step-number">{index + 1}</span>
+                    <span className="step-label">{step.label}</span>
+                  </div>
+                  <div className="step-value">{step.value}</div>
+                  <div className="step-description">{step.description}</div>
                 </div>
-                <div className="step-value">{step.value}</div>
-                <div className="step-description">{step.description}</div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Slice Positions */}
+        <div className="debug-section">
+          <h4>Slice Positions After Rotation</h4>
+          <div className="slice-debug-container">
+            {slicePositions.map((data) => (
+              <div 
+                key={data.index} 
+                className={`debug-info ${data.containsZeroDegree ? 'debug-active' : ''}`}
+              >
+                <div className="debug-slice-header">
+                  <span>Slice {data.index}</span>
+                  <span className="debug-slice-text">{data.text}</span>
+                </div>
+                <div className="debug-slice-position">
+                  <span>Position: {data.startAngle}° → {data.endAngle}°</span>
+                </div>
+                <div className="debug-slice-indicator">
+                  <span>At indicator (0°):</span>
+                  <span className={`debug-indicator-value ${data.containsZeroDegree ? 'positive' : 'negative'}`}>
+                    {data.containsZeroDegree ? 'YES ✓' : 'NO'}
+                  </span>
+                </div>
               </div>
             ))}
           </div>
         </div>
-      )}
-      
-      {/* Slice Positions */}
-      <div className="debug-section">
-        <h4>Slice Positions After Rotation</h4>
-        <div className="slice-debug-container">
-          {slicePositions.map((data) => (
-            <div 
-              key={data.index} 
-              className={`debug-info ${data.containsZeroDegree ? 'debug-active' : ''}`}
-            >
-              <div className="debug-slice-header">
-                <span>Slice {data.index}</span>
-                <span className="debug-slice-text">{data.text}</span>
-              </div>
-              <div className="debug-slice-position">
-                <span>Position: {data.startAngle}° → {data.endAngle}°</span>
-              </div>
-              <div className="debug-slice-indicator">
-                <span>At indicator (0°):</span>
-                <span className={`debug-indicator-value ${data.containsZeroDegree ? 'positive' : 'negative'}`}>
-                  {data.containsZeroDegree ? 'YES ✓' : 'NO'}
-                </span>
-              </div>
-            </div>
-          ))}
+        
+        {/* Explanation */}
+        <div className="debug-explanation">
+          <p>
+            <strong>How it works:</strong> The wheel rotates clockwise by {rotation.toFixed(2)}°. 
+            The slice that contains the indicator (0°) after rotation stops is the winner.
+          </p>
+          <p>
+            <strong>Computation:</strong> For each slice, we calculate its position after rotation by 
+            subtracting the normalized rotation from its original position. This is because when the wheel 
+            rotates clockwise (positive rotation), the slices move backward relative to the fixed indicator.
+          </p>
+          <p>
+            <strong>Direction consistency:</strong> Both the visual animation and the mathematical computation 
+            use the same direction convention: positive rotation values = clockwise rotation.
+          </p>
         </div>
       </div>
       
-      {/* Explanation */}
-      <div className="debug-explanation">
-        <p>
-          <strong>How it works:</strong> The wheel rotates clockwise by {rotation.toFixed(2)}°. 
-          The slice that contains the indicator (0°) after rotation stops is the winner.
-        </p>
-        <p>
-          <strong>Computation:</strong> For each slice, we calculate its position after rotation by 
-          subtracting the normalized rotation from its original position. This is because when the wheel 
-          rotates clockwise (positive rotation), the slices move backward relative to the fixed indicator.
-        </p>
-        <p>
-          <strong>Direction consistency:</strong> Both the visual animation and the mathematical computation 
-          use the same direction convention: positive rotation values = clockwise rotation.
-        </p>
-      </div>
-      
+      {/* Toggle button for showing the debug panel */}
       <button 
-        className="debug-hide-button"
-        onClick={onHideDebug}
+        className={`debug-toggle-button ${isVisible ? 'panel-visible' : ''}`}
+        onClick={() => onHideDebug()}
+        aria-label={isVisible ? "Hide debug panel" : "Show debug panel"}
       >
-        Hide Debug Panel
+        {isVisible ? '◀' : '▶'}
       </button>
-    </div>
+    </>
   );
 };
 

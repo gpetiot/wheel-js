@@ -305,17 +305,18 @@ const WheelSpinner = () => {
       </div>
       
       {/* Debug Panel - now rendered outside the main layout */}
-      <DebugPanel 
-        rotation={rotation}
-        wheelSlices={wheelSlices}
-        isSpinning={isSpinning}
-        showResult={showResult}
-        resultIndex={resultIndex}
-        resultText={result}
+      {DEFAULTS.DEBUG && (
+        <DebugPanel
+          rotation={rotation}
+          wheelSlices={wheelSlices}
+          isSpinning={isSpinning}
+          showResult={showResult}
+          resultIndex={resultIndex}
+          resultText={result}
         getRotatedSlicePositions={getRotatedSlicePositions}
         onHideDebug={() => setShowDebug(!showDebug)}
         isVisible={showDebug}
-      />
+      />)}
     </div>
   );
 };

@@ -128,18 +128,19 @@ const Wheel = ({ wheelSlices, rotation, highlightIndex = -1 }) => {
               sliceAngle={slice.sliceAngle}
             />
             {/* Debug index number on each slice */}
-            <text
-              x={middleX}
-              y={middleY}
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fill="black"
+            {DEFAULTS.DEBUG && (
+              <text
+                x={middleX}
+                y={middleY}
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fill="black"
               fontSize="2"
               fontWeight="bold"
               transform={`rotate(${adjustedRotation}, ${middleX}, ${middleY})`}
             >
               {index}
-            </text>
+            </text>)}
           </React.Fragment>
         );
       })}

@@ -44,6 +44,11 @@
   will-change: transform;
 }
 
+/* Class to disable transition when resetting the wheel */
+.wheel-no-transition {
+  transition: none !important;
+}
+
 .wheel-indicator {
   position: absolute;
   top: -16px;

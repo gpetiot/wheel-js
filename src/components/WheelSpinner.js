@@ -21,6 +21,9 @@ const WheelSpinner = () => {
   const [wheelSlices, setWheelSlices] = useState([]);
   const [showDebug, setShowDebug] = useState(true); // Debug mode enabled by default
   
+  // Flag to track if rotation change is from a reset (not a spin)
+  const isResetRef = useRef(false);
+  
   // Wheel reference to handle transition end
   const wheelRef = useRef(null);
   
@@ -53,8 +56,24 @@ const WheelSpinner = () => {
       return false; // Don't add duplicate
     }
     
+    // Apply no-transition class before changing rotation
+    if (wheelRef.current) {
+      wheelRef.current.classList.add('wheel-no-transition');
+    }
+    
     setChoices(prevChoices => [...prevChoices, createChoice(text)]);
+    
+    // Mark this rotation change as a reset, not a spin
+    isResetRef.current = true;
     setRotation(0); // Reset rotation
+    
+    // Remove the class after a short delay to allow the DOM to update
+    setTimeout(() => {
+      if (wheelRef.current) {
+        wheelRef.current.classList.remove('wheel-no-transition');
+      }
+    }, 50);
+    
     return true;
   }, [choices]);
   
@@ -99,12 +118,41 @@ const WheelSpinner = () => {
       return updatedChoices;
     });
     
+    // Apply no-transition class before changing rotation
+    if (wheelRef.current) {
+      wheelRef.current.classList.add('wheel-no-transition');
+    }
+    
+    // Mark this rotation change as a reset, not a spin
+    isResetRef.current = true;
     setRotation(0); // Reset rotation
+    
+    // Remove the class after a short delay to allow the DOM to update
+    setTimeout(() => {
+      if (wheelRef.current) {
+        wheelRef.current.classList.remove('wheel-no-transition');
+      }
+    }, 50);
   }, []);
   
   const handleChoiceDelete = useCallback((index) => {
     setChoices(prevChoices => prevChoices.filter((_, i) => i !== index));
+    
+    // Apply no-transition class before changing rotation
+    if (wheelRef.current) {
+      wheelRef.current.classList.add('wheel-no-transition');
+    }
+    
+    // Mark this rotation change as a reset, not a spin
+    isResetRef.current = true;
     setRotation(0); // Reset rotation
+    
+    // Remove the class after a short delay to allow the DOM to update
+    setTimeout(() => {
+      if (wheelRef.current) {
+        wheelRef.current.classList.remove('wheel-no-transition');
+      }
+    }, 50);
   }, []);
   
   // Spinning functionality
@@ -118,7 +166,10 @@ const WheelSpinner = () => {
     setResultIndex(-1);
     setShowResult(false);
     
-    // Calculate random rotation (slower spin option for testing)
+    // This is a real spin, not a reset
+    isResetRef.current = false;
+    
+    // Calculate random rotation
     const randomSpins = DEFAULTS.MIN_SPINS + Math.random() * (DEFAULTS.MAX_SPINS - DEFAULTS.MIN_SPINS);
     const newRotation = rotation + (randomSpins * 360);
     
@@ -134,7 +185,11 @@ const WheelSpinner = () => {
     const wheelElement = wheelRef.current;
     
     const handleTransitionEnd = () => {
-      if (!isSpinning) return;
+      // Skip result calculation if this was just a reset, not a spin
+      if (!isSpinning || isResetRef.current) {
+        isResetRef.current = false;
+        return;
+      }
       
       // Calculate the winning slice based on the current wheel position
       const winningIndex = calculateRotatedSliceAtIndicator();

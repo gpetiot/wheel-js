@@ -214,6 +214,10 @@ export function calculateWheelSlices(choices) {
       }
   });
   
+  if (slices.length === 0) {
+    return [];
+  }
+
   // Verify that the total angle of all slices is 360 degrees
   const totalAngle = slices.reduce((sum, slice) => sum + slice.sliceAngle, 0);
   if (Math.abs(totalAngle - 360) > 0.001) {

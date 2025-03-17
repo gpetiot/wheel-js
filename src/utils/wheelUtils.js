@@ -253,3 +253,70 @@ export function calculateTextRotation(textAngle) {
       ? textRotationDegrees + 180 
       : textRotationDegrees;
 }
+
+/**
+ * Calculates the positions of all slices after rotation
+ * @param {Array} wheelSlices - Array of wheel slices
+ * @param {number} rotation - Current rotation in degrees
+ * @returns {Array} Array of objects containing slice positions and whether they contain the indicator
+ */
+export function calculateRotatedSlicePositions(wheelSlices, rotation) {
+  // No slices case
+  if (wheelSlices.length === 0) return [];
+  
+  // Single slice case
+  if (wheelSlices.length === 1) {
+    return [{
+      index: 0,
+      text: wheelSlices[0].text,
+      startAngle: 0,
+      endAngle: 360,
+      containsZeroDegree: true
+    }];
+  }
+  
+  // Get normalized rotation between 0-360°
+  let normalizedRotation = rotation % 360;
+  if (normalizedRotation < 0) normalizedRotation += 360;
+  
+  // IMPORTANT: The wheel rotates clockwise (positive rotation values)
+  // When the wheel rotates clockwise, the slices move backward relative to the fixed indicator
+  // So we subtract the rotation from each slice's original position
+  
+  return wheelSlices.map((slice, i) => {
+    // Calculate slice position after rotation
+    // Formula: (original position - rotation) to account for clockwise movement
+    let sliceStartAngle = (slice.rotate - normalizedRotation) % 360;
+    if (sliceStartAngle < 0) sliceStartAngle += 360;
+    
+    let sliceEndAngle = (sliceStartAngle + slice.sliceAngle) % 360;
+    
+    // Check if indicator (0°) falls within this slice
+    const containsZeroDegree = sliceStartAngle <= sliceEndAngle 
+      ? (0 >= sliceStartAngle && 0 < sliceEndAngle) // Normal case
+      : true; // Boundary case
+    
+    return {
+      index: i,
+      text: slice.text,
+      startAngle: sliceStartAngle,
+      endAngle: sliceEndAngle,
+      containsZeroDegree
+    };
+  });
+}
+
+/**
+ * Finds which slice is at the indicator (0°) position
+ * @param {Array} rotatedPositions - Pre-computed array of slice positions from calculateRotatedSlicePositions
+ * @returns {number} Index of the slice at the indicator position, or -1 if no slices
+ */
+export function calculateRotatedSliceAtIndicator(rotatedPositions) {
+  // No slices case
+  if (!rotatedPositions || rotatedPositions.length === 0) return -1;
+  
+  // Find the slice that contains the indicator
+  const winningSlice = rotatedPositions.find(slice => slice.containsZeroDegree);
+  
+  return winningSlice ? winningSlice.index : -1;
+}

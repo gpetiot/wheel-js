@@ -5,7 +5,9 @@ import DebugPanel from './DebugPanel';
 import { 
   isDuplicateChoice, 
   createChoice,
-  calculateWheelSlices
+  calculateWheelSlices,
+  calculateRotatedSlicePositions,
+  calculateRotatedSliceAtIndicator
 } from '../utils/wheelUtils';
 import { DEFAULTS } from '../utils/constants';
 import './WheelSpinner.css';
@@ -180,6 +182,18 @@ const WheelSpinner = () => {
     // (see the useEffect that handles the transitionend event)
   }, [isSpinning, choices.length, rotation]);
   
+  // Function to calculate all slices' positions for the debug panel
+  const getRotatedSlicePositions = useCallback(() => {
+    const positions = calculateRotatedSlicePositions(wheelSlices, rotation);
+    
+    // Format the positions for display
+    return positions.map(pos => ({
+      ...pos,
+      startAngle: pos.startAngle.toFixed(2),
+      endAngle: pos.endAngle.toFixed(2)
+    }));
+  }, [rotation, wheelSlices]);
+  
   // Handle transition end to calculate the result when wheel stops spinning
   useEffect(() => {
     const wheelElement = wheelRef.current;
@@ -192,7 +206,8 @@ const WheelSpinner = () => {
       }
       
       // Calculate the winning slice based on the current wheel position
-      const winningIndex = calculateRotatedSliceAtIndicator();
+      const positions = calculateRotatedSlicePositions(wheelSlices, rotation);
+      const winningIndex = calculateRotatedSliceAtIndicator(positions);
       setResultIndex(winningIndex);
       
       // Get the result text from the winning slice (if valid)
@@ -216,81 +231,6 @@ const WheelSpinner = () => {
       }
     };
   }, [rotation, isSpinning, wheelSlices]);
-  
-  // Function to find which slice is at the indicator (0°) position
-  const calculateRotatedSliceAtIndicator = useCallback(() => {
-    // No slices case
-    if (wheelSlices.length === 0) return -1;
-    
-    // Single slice case
-    if (wheelSlices.length === 1) return 0;
-    
-    // Get normalized rotation between 0-360°
-    let normalizedRotation = rotation % 360;
-    if (normalizedRotation < 0) normalizedRotation += 360;
-    
-    // IMPORTANT: The wheel rotates clockwise (positive rotation values)
-    // When the wheel rotates clockwise, the slices move backward relative to the fixed indicator
-    // So we subtract the rotation from each slice's original position
-    
-    // Check each slice to see which one contains the indicator (0°)
-    for (let i = 0; i < wheelSlices.length; i++) {
-      const slice = wheelSlices[i];
-      
-      // Calculate slice position after rotation
-      // Formula: (original position - rotation) to account for clockwise movement
-      let sliceStartAngle = (slice.rotate - normalizedRotation) % 360;
-      if (sliceStartAngle < 0) sliceStartAngle += 360;
-      
-      let sliceEndAngle = (sliceStartAngle + slice.sliceAngle) % 360;
-      
-      // Check if indicator (0°) is within this slice
-      if (sliceStartAngle <= sliceEndAngle) {
-        // Normal case: slice doesn't cross the 0/360 boundary
-        if (0 >= sliceStartAngle && 0 < sliceEndAngle) {
-          return i;
-        }
-      } else {
-        // Edge case: slice crosses the 0/360 boundary
-        if (0 >= sliceStartAngle || 0 < sliceEndAngle) {
-          return i;
-        }
-      }
-    }
-    
-    return 0; // Fallback to first slice
-  }, [rotation, wheelSlices]);
-  
-  // Function to calculate all slices' positions for the debug panel
-  const getRotatedSlicePositions = useCallback(() => {
-    // Normalize the rotation to be between 0 and 360 degrees
-    let normalizedRotation = rotation % 360;
-    if (normalizedRotation < 0) normalizedRotation += 360;
-    
-    // IMPORTANT: Using the same formula as calculateRotatedSliceAtIndicator
-    // to ensure consistency between the computation and the debug display
-    return wheelSlices.map((slice, i) => {
-      // Calculate slice position after rotation
-      // Formula: (original position - rotation) to account for clockwise movement
-      let sliceStartAngle = (slice.rotate - normalizedRotation) % 360;
-      if (sliceStartAngle < 0) sliceStartAngle += 360;
-      
-      let sliceEndAngle = (sliceStartAngle + slice.sliceAngle) % 360;
-      
-      // Check if indicator (0°) falls within this slice
-      const containsZeroDegree = sliceStartAngle <= sliceEndAngle 
-        ? (0 >= sliceStartAngle && 0 < sliceEndAngle) // Normal case
-        : (0 >= sliceStartAngle || 0 < sliceEndAngle); // Boundary case
-        
-      return {
-        index: i,
-        text: slice.text,
-        startAngle: sliceStartAngle.toFixed(2),
-        endAngle: sliceEndAngle.toFixed(2),
-        containsZeroDegree,
-      };
-    });
-  }, [rotation, wheelSlices]);
   
   // Update debug info during animation
   useEffect(() => {

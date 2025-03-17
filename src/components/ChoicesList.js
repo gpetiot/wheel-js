@@ -120,4 +120,4 @@ const ChoicesList = ({ choices, onChoiceEdit, onChoiceUpdate, onChoiceDelete, on
   );
 };
 
-export default ChoicesList; 
+export default ChoicesList;

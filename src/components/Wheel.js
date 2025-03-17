@@ -161,4 +161,4 @@ const Wheel = ({ wheelSlices, rotation, highlightIndex = -1 }) => {
   );
 };
 
-export default Wheel; 
+export default Wheel;

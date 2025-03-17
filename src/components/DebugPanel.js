@@ -164,4 +164,4 @@ const DebugPanel = ({
   );
 };
 
-export default DebugPanel; 
+export default DebugPanel;

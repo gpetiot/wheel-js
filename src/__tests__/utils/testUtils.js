@@ -165,3 +165,10 @@ export function verifyResult(result, wheelSlices, rotation, expect) {
   const winningSlice = wheelSlices[result.index];
   expect(sliceContainsZeroDegree(winningSlice, rotation)).toBe(true);
 }
+
+// Add a dummy test to satisfy Jest's requirement for at least one test
+describe('Test Utils', () => {
+  test('Dummy test to satisfy Jest', () => {
+    expect(true).toBe(true);
+  });
+});

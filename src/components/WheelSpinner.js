@@ -338,13 +338,12 @@ const WheelSpinner = () => {
           </div>
           
           {showResult && (
-            <div className="w-full max-w-[480px] mx-auto py-5 px-6 text-center relative animate-[fadeIn_0.5s_ease-in,pulseScale_1s_ease-in-out] bg-white/80 backdrop-blur-sm rounded-xl shadow-md">
-              <div className="text-lg text-slate-600 font-medium">The wheel has chosen:</div>
-              <div className="relative mt-3 pb-3">
-                <strong className="block text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-500 bg-clip-text text-transparent drop-shadow-sm">
+            <div className="w-full max-w-[480px] mx-auto py-3 px-6 text-center relative animate-[fadeIn_0.5s_ease-in,pulseScale_1s_ease-in-out] bg-white/80 backdrop-blur-sm rounded-xl shadow-md">
+              <div className="flex items-center justify-center gap-3">
+                <span className="text-slate-600 font-medium">The wheel has chosen:</span>
+                <strong className="text-2xl font-bold text-blue-600">
                   {result}
                 </strong>
-                <div className="absolute bottom-0 left-1/2 w-4/5 h-[2px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent -translate-x-1/2"></div>
               </div>
             </div>
           )}

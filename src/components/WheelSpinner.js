@@ -305,9 +305,9 @@ const WheelSpinner = () => {
             </div>
             <button 
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 py-4 px-8 
-              bg-red-600 hover:bg-red-700
+              bg-rose-500 hover:bg-rose-600
               text-white font-bold text-2xl rounded-full 
-              shadow-[0_4px_14px_0_rgba(220,38,38,0.5)] 
+              shadow-[0_4px_14px_0_rgba(225,29,72,0.4)] 
               transition-all duration-300 ease-out transform hover:scale-105 active:scale-95 
               cursor-pointer z-10 
               disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none 

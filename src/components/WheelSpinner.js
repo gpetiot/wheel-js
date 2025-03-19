@@ -276,7 +276,7 @@ const WheelSpinner = () => {
   
   return (
     <div className="max-w-[1500px] mx-auto p-4 md:p-8 transition-all duration-300">
-      <h1 className="text-center mb-12 mt-0 relative">
+      <h1 className="text-center mb-16 md:mb-20 mt-0 relative">
         <span className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-blue-600 via-purple-500 to-red-500 bg-clip-text text-transparent drop-shadow-sm">
           Wheel Spinner
         </span>

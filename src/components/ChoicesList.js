@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 // Choice item component for each row in the choices list
-const ChoiceItem = ({ choice, index, onEdit, onUpdate, onDelete }) => {
+const ChoiceItem = ({ choice, index, onEdit, onUpdate, onDelete, sliceColor }) => {
   const [editValue, setEditValue] = useState(choice.text);
   const inputRef = useRef(null);
   
@@ -36,10 +36,20 @@ const ChoiceItem = ({ choice, index, onEdit, onUpdate, onDelete }) => {
     );
   }
   
+  // Create a custom style with the slice color
+  const customStyle = {
+    borderLeft: `8px solid ${sliceColor || '#e5e7eb'}`,
+  };
+  
   return (
-    <li className="flex items-center justify-between p-3 border-b border-gray-200 transition-all duration-200 hover:bg-gray-50/80 relative overflow-hidden group" data-index={index}>
+    <li 
+      className="flex items-center justify-between p-3 border-b border-gray-200 transition-all duration-200 hover:bg-gray-50/80 relative overflow-hidden group" 
+      style={customStyle}
+      data-index={index}
+    >
       <div 
-        className="absolute inset-0 opacity-0 group-hover:opacity-5 bg-gradient-to-r from-blue-600 to-purple-500 transition-opacity duration-300"
+        className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300"
+        style={{ backgroundColor: sliceColor || 'transparent' }}
         aria-hidden="true"
       ></div>
       <div className="flex items-center gap-2 cursor-pointer flex-1 group z-10" onClick={() => onEdit(index)}>
@@ -73,7 +83,7 @@ const EmptyChoicesMessage = () => (
 );
 
 // Main ChoicesList component
-const ChoicesList = ({ choices, onChoiceEdit, onChoiceUpdate, onChoiceDelete, onChoiceAdd }) => {
+const ChoicesList = ({ choices, onChoiceEdit, onChoiceUpdate, onChoiceDelete, onChoiceAdd, wheelSlices = [] }) => {
   const newChoiceInputRef = useRef(null);
   const [newChoice, setNewChoice] = useState('');
   
@@ -107,6 +117,7 @@ const ChoicesList = ({ choices, onChoiceEdit, onChoiceUpdate, onChoiceDelete, on
                 onEdit={onChoiceEdit}
                 onUpdate={onChoiceUpdate}
                 onDelete={onChoiceDelete}
+                sliceColor={wheelSlices[index]?.color}
               />
             ))
           )}

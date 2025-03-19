@@ -357,6 +357,7 @@ const WheelSpinner = () => {
             onChoiceUpdate={handleChoiceUpdate}
             onChoiceDelete={handleChoiceDelete}
             onChoiceAdd={handleChoiceAdd}
+            wheelSlices={wheelSlices}
           />
         </div>
       </div>

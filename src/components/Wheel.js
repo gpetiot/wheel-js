@@ -7,11 +7,11 @@ const SliceText = ({ text, x, y, rotation, sliceAngle }) => {
   // Larger font for full circle or large slices
   let fontSize;
   if (sliceAngle === 360) {
-    fontSize = "3.5";  // Slightly smaller font for full circle near border
+    fontSize = "4.5";  // Larger font for full circle near border
   } else if (sliceAngle > 45) {
-    fontSize = "3";  // Larger font for bigger slices
+    fontSize = "4";    // Larger font for bigger slices
   } else {
-    fontSize = "2.5"; // Default size for smaller slices
+    fontSize = "3.5";  // Larger font for smaller slices
   }
   
   // Break text into multiple lines if needed

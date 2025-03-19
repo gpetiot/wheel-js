@@ -61,7 +61,7 @@ const SliceText = ({ text, x, y, rotation, sliceAngle }) => {
 
 // Empty wheel message when no choices exist
 const EmptyWheelMessage = () => (
-  <div className="empty-wheel-message">
+  <div className="flex items-center justify-center h-full w-full bg-gray-100 rounded-full text-gray-500 text-2xl text-center leading-relaxed">
     Add choices<br/>to start
   </div>
 );
@@ -135,12 +135,12 @@ const Wheel = ({ wheelSlices, rotation, highlightIndex = -1 }) => {
                 textAnchor="middle"
                 dominantBaseline="middle"
                 fill="black"
-              fontSize="2"
-              fontWeight="bold"
-              transform={`rotate(${adjustedRotation}, ${middleX}, ${middleY})`}
-            >
-              {index}
-            </text>)}
+                fontSize="2"
+                fontWeight="bold"
+                transform={`rotate(${adjustedRotation}, ${middleX}, ${middleY})`}
+              >
+                {index}
+              </text>)}
           </React.Fragment>
         );
       })}

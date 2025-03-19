@@ -10,7 +10,6 @@ import {
   calculateRotatedSliceAtIndicator
 } from '../utils/wheelUtils';
 import { DEFAULTS } from '../utils/constants';
-import './WheelSpinner.css';
 
 const WheelSpinner = () => {
   // State
@@ -258,18 +257,21 @@ const WheelSpinner = () => {
   }, [isSpinning, showDebug]);
   
   return (
-    <div className="container">
-      <h1>Wheel Spinner</h1>
+    <div className="max-w-[1200px] mx-auto p-8 transition-all duration-300">
+      <h1 className="text-center text-4xl mb-8 text-gray-900 mt-0">Wheel Spinner</h1>
       
-      <div className={`app-layout ${showDebug ? 'content-with-debug-panel' : 'content-without-debug-panel'}`}>
+      <div className={`flex flex-col md:flex-row gap-8 transition-all duration-300 ${showDebug ? 'ml-[350px]' : 'ml-0'}`}>
         {/* Wheel Section */}
-        <div className="wheel-section">
-          <div className="wheel-container">
-            <div className="wheel-indicator"></div>
+        <div className="flex flex-col items-center gap-6 md:flex-1">
+          <div className="relative w-full max-w-[400px] aspect-square">
+            <div className="absolute top-1/2 right-[-16px] -translate-y-1/2 w-0 h-0 border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent border-r-[24px] border-r-red-500 z-10"></div>
             <div 
               ref={wheelRef}
-              className="wheel" 
-              style={{ transform: `rotate(${rotation}deg)` }}
+              className="w-full h-full rounded-full overflow-hidden relative shadow-lg will-change-transform"
+              style={{ 
+                transform: `rotate(${rotation}deg)`,
+                transition: isResetRef.current ? "none" : "transform 5s cubic-bezier(0.2, 0.8, 0.2, 1)"
+              }}
             >
               <Wheel 
                 wheelSlices={wheelSlices} 
@@ -278,7 +280,7 @@ const WheelSpinner = () => {
               />
             </div>
             <button 
-              className="spin-button"
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 py-3 px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg rounded-full shadow-md transition-colors duration-200 cursor-pointer z-10 disabled:bg-blue-300 disabled:cursor-not-allowed"
               onClick={spinWheel}
               disabled={isSpinning || choices.length === 0}
             >
@@ -287,9 +289,12 @@ const WheelSpinner = () => {
           </div>
           
           {showResult && (
-            <div className="result-message">
+            <div className="w-full max-w-[400px] mx-auto py-4 px-4 text-center text-2xl text-slate-900 font-medium relative animate-fade-in animate-pulse-scale">
               The wheel has chosen:
-              <strong>{result}</strong>
+              <strong className="block mt-2 text-3xl font-bold text-blue-600 drop-shadow-sm">
+                {result}
+              </strong>
+              <div className="absolute -bottom-[10px] left-1/2 w-4/5 h-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent -translate-x-1/2 rounded-md"></div>
             </div>
           )}
         </div>
@@ -313,10 +318,11 @@ const WheelSpinner = () => {
           showResult={showResult}
           resultIndex={resultIndex}
           resultText={result}
-        getRotatedSlicePositions={getRotatedSlicePositions}
-        onHideDebug={() => setShowDebug(!showDebug)}
-        isVisible={showDebug}
-      />)}
+          getRotatedSlicePositions={getRotatedSlicePositions}
+          onHideDebug={() => setShowDebug(!showDebug)}
+          isVisible={showDebug}
+        />
+      )}
     </div>
   );
 };

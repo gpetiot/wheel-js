@@ -276,7 +276,13 @@ const WheelSpinner = () => {
   
   return (
     <div className="max-w-[1500px] mx-auto p-4 md:p-8 transition-all duration-300">
-      <h1 className="text-center text-4xl mb-12 text-gray-900 mt-0">Wheel Spinner</h1>
+      <h1 className="text-center mb-12 mt-0 relative">
+        <span className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-blue-600 via-purple-500 to-red-500 bg-clip-text text-transparent drop-shadow-sm">
+          Wheel Spinner
+        </span>
+        <div className="absolute w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-500 bottom-[-16px] left-1/2 -translate-x-1/2 rounded-full"></div>
+        <div className="absolute w-12 h-1 bg-gradient-to-r from-purple-500 to-red-500 bottom-[-24px] left-1/2 -translate-x-1/2 rounded-full"></div>
+      </h1>
       
       <div className={`flex flex-col md:flex-row transition-all duration-300 ${showDebug ? 'ml-[350px] md:ml-[100px] lg:ml-[50px]' : 'ml-0'}`}>
         {/* Wheel Section */}

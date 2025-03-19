@@ -275,13 +275,13 @@ const WheelSpinner = () => {
   }, [isSpinning, showDebug]);
   
   return (
-    <div className="max-w-[1200px] mx-auto p-8 transition-all duration-300">
-      <h1 className="text-center text-4xl mb-8 text-gray-900 mt-0">Wheel Spinner</h1>
+    <div className="max-w-[1500px] mx-auto p-4 md:p-8 transition-all duration-300">
+      <h1 className="text-center text-4xl mb-12 text-gray-900 mt-0">Wheel Spinner</h1>
       
-      <div className={`flex flex-col md:flex-row gap-8 transition-all duration-300 ${showDebug ? 'ml-[350px]' : 'ml-0'}`}>
+      <div className={`flex flex-col md:flex-row transition-all duration-300 ${showDebug ? 'ml-[350px] md:ml-[100px] lg:ml-[50px]' : 'ml-0'}`}>
         {/* Wheel Section */}
-        <div className="flex flex-col items-center gap-6 md:flex-1">
-          <div className="relative w-full max-w-[400px] aspect-square">
+        <div className="flex flex-col items-center gap-6 md:w-1/2 md:pr-8">
+          <div className="relative w-full max-w-[480px] aspect-square mx-auto">
             <div className="absolute top-1/2 right-[-16px] -translate-y-1/2 w-0 h-0 border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent border-r-[24px] border-r-red-500 z-10"></div>
             <div 
               ref={wheelRef}
@@ -324,7 +324,7 @@ const WheelSpinner = () => {
           </div>
           
           {showResult && (
-            <div className="w-full max-w-[400px] mx-auto py-4 px-4 text-center text-2xl text-slate-900 font-medium relative animate-[fadeIn_0.5s_ease-in,pulseScale_1s_ease-in-out]">
+            <div className="w-full max-w-[480px] mx-auto py-4 px-4 text-center text-2xl text-slate-900 font-medium relative animate-[fadeIn_0.5s_ease-in,pulseScale_1s_ease-in-out]">
               The wheel has chosen:
               <strong className="block mt-2 text-3xl font-bold text-blue-600 drop-shadow-sm">
                 {result}
@@ -335,13 +335,15 @@ const WheelSpinner = () => {
         </div>
         
         {/* Choices List */}
-        <ChoicesList 
-          choices={choices}
-          onChoiceEdit={handleChoiceEdit}
-          onChoiceUpdate={handleChoiceUpdate}
-          onChoiceDelete={handleChoiceDelete}
-          onChoiceAdd={handleChoiceAdd}
-        />
+        <div className="md:w-1/2 md:pl-10 lg:pl-12 md:border-l border-gray-200 mt-16 md:mt-0">
+          <ChoicesList 
+            choices={choices}
+            onChoiceEdit={handleChoiceEdit}
+            onChoiceUpdate={handleChoiceUpdate}
+            onChoiceDelete={handleChoiceDelete}
+            onChoiceAdd={handleChoiceAdd}
+          />
+        </div>
       </div>
       
       {/* Debug Panel - now rendered outside the main layout */}

@@ -305,12 +305,12 @@ const WheelSpinner = () => {
             </div>
             <button 
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 py-4 px-8 
-              bg-gradient-to-br from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 
+              bg-gradient-to-br from-blue-600 via-purple-500 to-red-500 hover:from-blue-700 hover:via-purple-600 hover:to-red-600 
               text-white font-bold text-xl rounded-full 
-              shadow-[0_4px_14px_0_rgba(220,38,38,0.39)] 
+              shadow-[0_4px_14px_0_rgba(79,70,229,0.4)] 
               transition-all duration-300 ease-out transform hover:scale-105 active:scale-95 
               cursor-pointer z-10 
-              disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed disabled:shadow-none 
+              disabled:from-gray-400 disabled:via-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed disabled:shadow-none 
               flex items-center justify-center gap-2 min-w-36"
               onClick={spinWheel}
               disabled={isSpinning || choices.length === 0}
@@ -330,12 +330,14 @@ const WheelSpinner = () => {
           </div>
           
           {showResult && (
-            <div className="w-full max-w-[480px] mx-auto py-4 px-4 text-center text-2xl text-slate-900 font-medium relative animate-[fadeIn_0.5s_ease-in,pulseScale_1s_ease-in-out]">
-              The wheel has chosen:
-              <strong className="block mt-2 text-3xl font-bold text-blue-600 drop-shadow-sm">
-                {result}
-              </strong>
-              <div className="absolute -bottom-[10px] left-1/2 w-4/5 h-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent -translate-x-1/2 rounded-md"></div>
+            <div className="w-full max-w-[480px] mx-auto py-5 px-6 text-center relative animate-[fadeIn_0.5s_ease-in,pulseScale_1s_ease-in-out] bg-white/80 backdrop-blur-sm rounded-xl shadow-md">
+              <div className="text-lg text-slate-600 font-medium">The wheel has chosen:</div>
+              <div className="relative mt-3 pb-3">
+                <strong className="block text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-500 to-red-500 bg-clip-text text-transparent drop-shadow-sm">
+                  {result}
+                </strong>
+                <div className="absolute bottom-0 left-1/2 w-4/5 h-[2px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent -translate-x-1/2"></div>
+              </div>
             </div>
           )}
         </div>

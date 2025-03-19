@@ -4,7 +4,7 @@ import { DEFAULTS } from '../utils/constants';
 
 // Text component for the slice labels
 const SliceText = ({ text, x, y, rotation, sliceAngle }) => {
-  // Larger font for full circle or large slices
+  // Improved font size calculation
   let fontSize;
   if (sliceAngle === 360) {
     fontSize = "4.5";  // Larger font for full circle near border
@@ -29,7 +29,7 @@ const SliceText = ({ text, x, y, rotation, sliceAngle }) => {
         fontSize={fontSize}
         fontWeight="bold"
         transform={`rotate(${rotation}, ${x}, ${y})`}
-        style={{ textShadow: "0 0 1px black" }}
+        style={{ textShadow: "0 1px 2px rgba(0,0,0,0.3)" }}
       >
         <title>{text}</title>
         {text}
@@ -50,7 +50,7 @@ const SliceText = ({ text, x, y, rotation, sliceAngle }) => {
       fontSize={fontSize}
       fontWeight="bold"
       transform={`rotate(${rotation}, ${x}, ${y})`}
-      style={{ textShadow: "0 0 1px black" }}
+      style={{ textShadow: "0 1px 2px rgba(0,0,0,0.3)" }}
     >
       <title>{text}</title>
       <tspan x={x} dy="-0.6em">{words.slice(0, midpoint).join(' ')}</tspan>
@@ -61,8 +61,12 @@ const SliceText = ({ text, x, y, rotation, sliceAngle }) => {
 
 // Empty wheel message when no choices exist
 const EmptyWheelMessage = () => (
-  <div className="flex items-center justify-center h-full w-full bg-gray-100 rounded-full text-gray-500 text-2xl text-center leading-relaxed">
-    Add choices<br/>to start
+  <div className="flex flex-col items-center justify-center h-full w-full bg-gradient-to-br from-gray-50 to-gray-100 rounded-full text-gray-400 text-center">
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <div className="text-xl font-medium">Add choices</div>
+    <div className="text-sm mt-1 text-gray-400">to start spinning</div>
   </div>
 );
 
@@ -78,6 +82,16 @@ const Wheel = ({ wheelSlices, rotation, highlightIndex = -1 }) => {
   
   return (
     <svg width="100%" height="100%" viewBox="0 0 100 100">
+      {/* Center circle (optional decorative element) */}
+      <circle 
+        cx={centerX} 
+        cy={centerY} 
+        r={2} 
+        fill="white" 
+        stroke="#e5e7eb" 
+        strokeWidth="0.5" 
+      />
+      
       {wheelSlices.map((slice, index) => {
         // Calculate angles in radians
         const startAngle = toRadians(slice.rotate);
@@ -105,6 +119,9 @@ const Wheel = ({ wheelSlices, rotation, highlightIndex = -1 }) => {
         const adjustedRotation = slice.sliceAngle === 360 
           ? 0 
           : calculateTextRotation(textAngle);
+          
+        // Determine if this slice is highlighted (the winner)
+        const isHighlighted = index === highlightIndex;
         
         // Add index number to each slice for debugging
         const middleRadius = radius * 0.4;
@@ -119,7 +136,18 @@ const Wheel = ({ wheelSlices, rotation, highlightIndex = -1 }) => {
               stroke="white"
               strokeWidth="1"
               data-slice-index={index}
+              className={isHighlighted ? "filter brightness-110" : ""}
             />
+            {isHighlighted && (
+              <path
+                d={pathData}
+                fill="white"
+                opacity="0.1"
+                stroke="white"
+                strokeWidth="1.5"
+                data-highlight="true"
+              />
+            )}
             <SliceText 
               text={slice.text}
               x={textX}

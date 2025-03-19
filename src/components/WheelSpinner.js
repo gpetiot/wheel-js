@@ -277,11 +277,11 @@ const WheelSpinner = () => {
   return (
     <div className="max-w-[1500px] mx-auto p-4 md:p-8 transition-all duration-300">
       <h1 className="text-center mb-16 md:mb-20 mt-0 relative">
-        <span className="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-blue-600 via-purple-500 to-red-500 bg-clip-text text-transparent drop-shadow-sm">
+        <span className="text-4xl md:text-5xl font-bold tracking-tight text-blue-600 drop-shadow-sm">
           Wheel Spinner
         </span>
-        <div className="absolute w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-500 bottom-[-16px] left-1/2 -translate-x-1/2 rounded-full"></div>
-        <div className="absolute w-12 h-1 bg-gradient-to-r from-purple-500 to-red-500 bottom-[-24px] left-1/2 -translate-x-1/2 rounded-full"></div>
+        <div className="absolute w-24 h-1 bg-blue-600 bottom-[-16px] left-1/2 -translate-x-1/2 rounded-full"></div>
+        <div className="absolute w-12 h-1 bg-blue-600/70 bottom-[-24px] left-1/2 -translate-x-1/2 rounded-full"></div>
       </h1>
       
       <div className={`flex flex-col md:flex-row transition-all duration-300 ${showDebug ? 'ml-[350px] md:ml-[100px] lg:ml-[50px]' : 'ml-0'}`}>
@@ -333,7 +333,7 @@ const WheelSpinner = () => {
             <div className="w-full max-w-[480px] mx-auto py-5 px-6 text-center relative animate-[fadeIn_0.5s_ease-in,pulseScale_1s_ease-in-out] bg-white/80 backdrop-blur-sm rounded-xl shadow-md">
               <div className="text-lg text-slate-600 font-medium">The wheel has chosen:</div>
               <div className="relative mt-3 pb-3">
-                <strong className="block text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-500 to-red-500 bg-clip-text text-transparent drop-shadow-sm">
+                <strong className="block text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-500 bg-clip-text text-transparent drop-shadow-sm">
                   {result}
                 </strong>
                 <div className="absolute bottom-0 left-1/2 w-4/5 h-[2px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent -translate-x-1/2"></div>

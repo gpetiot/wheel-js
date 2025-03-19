@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Wheel from './Wheel';
 import ChoicesList from './ChoicesList';
 import DebugPanel from './DebugPanel';
+import ResultPopup from './ResultPopup';
 import { 
   isDuplicateChoice, 
   createChoice,
@@ -21,6 +22,7 @@ const WheelSpinner = () => {
   const [showResult, setShowResult] = useState(false);
   const [wheelSlices, setWheelSlices] = useState([]);
   const [showDebug, setShowDebug] = useState(true); // Debug mode enabled by default
+  const [showPopup, setShowPopup] = useState(false);
   
   // Flag to track if rotation change is from a reset (not a spin)
   const isResetRef = useRef(false);
@@ -236,6 +238,9 @@ const WheelSpinner = () => {
       setResult(resultText);
       setShowResult(true);
       setIsSpinning(false);
+      
+      // Show the result popup
+      setShowPopup(true);
     };
     
     if (wheelElement) {
@@ -248,6 +253,11 @@ const WheelSpinner = () => {
       }
     };
   }, [rotation, isSpinning, wheelSlices]);
+  
+  // Close popup handler
+  const handleClosePopup = useCallback(() => {
+    setShowPopup(false);
+  }, []);
   
   // Update debug info during animation
   useEffect(() => {
@@ -338,7 +348,7 @@ const WheelSpinner = () => {
           </div>
           
           {showResult && (
-            <div className="w-full max-w-[480px] mx-auto py-3 px-6 text-center relative animate-[fadeIn_0.5s_ease-in,pulseScale_1s_ease-in-out] bg-white/80 backdrop-blur-sm rounded-xl shadow-md">
+            <div className="w-full max-w-[480px] mx-auto py-3 px-6 text-center relative bg-white/80 backdrop-blur-sm rounded-xl shadow-md opacity-0 motion-safe:animate-fade-in motion-safe:animate-pulse-once">
               <div className="flex items-center justify-center gap-3">
                 <span className="text-slate-600 font-medium">The wheel has chosen:</span>
                 <strong className="text-2xl font-bold text-blue-600">
@@ -376,6 +386,14 @@ const WheelSpinner = () => {
           isVisible={showDebug}
         />
       )}
+      
+      {/* Result Popup with Confetti */}
+      <ResultPopup 
+        result={result}
+        show={showPopup}
+        sliceColor={wheelSlices[resultIndex]?.color}
+        onClose={handleClosePopup}
+      />
     </div>
   );
 };

@@ -305,13 +305,13 @@ const WheelSpinner = () => {
             </div>
             <button 
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 py-4 px-8 
-              bg-gradient-to-br from-blue-600 via-purple-500 to-red-500 hover:from-blue-700 hover:via-purple-600 hover:to-red-600 
-              text-white font-bold text-xl rounded-full 
-              shadow-[0_4px_14px_0_rgba(79,70,229,0.4)] 
+              bg-red-600 hover:bg-red-700
+              text-white font-bold text-2xl rounded-full 
+              shadow-[0_4px_14px_0_rgba(220,38,38,0.5)] 
               transition-all duration-300 ease-out transform hover:scale-105 active:scale-95 
               cursor-pointer z-10 
-              disabled:from-gray-400 disabled:via-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed disabled:shadow-none 
-              flex items-center justify-center gap-2 min-w-36"
+              disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none 
+              flex items-center justify-center gap-2 min-w-36 border-2 border-white"
               onClick={spinWheel}
               disabled={isSpinning || choices.length === 0}
             >

@@ -20,28 +20,3 @@ code {
 * {
   box-sizing: border-box;
 }
-
-/* Essential animations that complement Tailwind */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes pulseScale {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-/* Utility class to disable transitions when resetting the wheel */
-.wheel-no-transition * {
-  transition: none !important;
-}
-
-/* Animation classes specific to wheel component */
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-in;
-}
-
-.animate-pulse-scale {
-  animation: pulseScale 1s ease-in-out;
-}

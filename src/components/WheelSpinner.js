@@ -57,9 +57,12 @@ const WheelSpinner = () => {
       return false; // Don't add duplicate
     }
     
-    // Apply no-transition class before changing rotation
+    // Apply no-transition class directly with inline style
     if (wheelRef.current) {
-      wheelRef.current.classList.add('wheel-no-transition');
+      const children = wheelRef.current.querySelectorAll('*');
+      children.forEach(child => {
+        child.style.transition = 'none';
+      });
     }
     
     setChoices(prevChoices => [...prevChoices, createChoice(text)]);
@@ -68,10 +71,13 @@ const WheelSpinner = () => {
     isResetRef.current = true;
     setRotation(0); // Reset rotation
     
-    // Remove the class after a short delay to allow the DOM to update
+    // Remove the inline styles after a short delay
     setTimeout(() => {
       if (wheelRef.current) {
-        wheelRef.current.classList.remove('wheel-no-transition');
+        const children = wheelRef.current.querySelectorAll('*');
+        children.forEach(child => {
+          child.style.transition = '';
+        });
       }
     }, 50);
     
@@ -119,19 +125,25 @@ const WheelSpinner = () => {
       return updatedChoices;
     });
     
-    // Apply no-transition class before changing rotation
+    // Apply no-transition class directly with inline style
     if (wheelRef.current) {
-      wheelRef.current.classList.add('wheel-no-transition');
+      const children = wheelRef.current.querySelectorAll('*');
+      children.forEach(child => {
+        child.style.transition = 'none';
+      });
     }
     
     // Mark this rotation change as a reset, not a spin
     isResetRef.current = true;
     setRotation(0); // Reset rotation
     
-    // Remove the class after a short delay to allow the DOM to update
+    // Remove the inline styles after a short delay
     setTimeout(() => {
       if (wheelRef.current) {
-        wheelRef.current.classList.remove('wheel-no-transition');
+        const children = wheelRef.current.querySelectorAll('*');
+        children.forEach(child => {
+          child.style.transition = '';
+        });
       }
     }, 50);
   }, []);
@@ -139,19 +151,25 @@ const WheelSpinner = () => {
   const handleChoiceDelete = useCallback((index) => {
     setChoices(prevChoices => prevChoices.filter((_, i) => i !== index));
     
-    // Apply no-transition class before changing rotation
+    // Apply no-transition class directly with inline style
     if (wheelRef.current) {
-      wheelRef.current.classList.add('wheel-no-transition');
+      const children = wheelRef.current.querySelectorAll('*');
+      children.forEach(child => {
+        child.style.transition = 'none';
+      });
     }
     
     // Mark this rotation change as a reset, not a spin
     isResetRef.current = true;
     setRotation(0); // Reset rotation
     
-    // Remove the class after a short delay to allow the DOM to update
+    // Remove the inline styles after a short delay
     setTimeout(() => {
       if (wheelRef.current) {
-        wheelRef.current.classList.remove('wheel-no-transition');
+        const children = wheelRef.current.querySelectorAll('*');
+        children.forEach(child => {
+          child.style.transition = '';
+        });
       }
     }, 50);
   }, []);
@@ -289,7 +307,7 @@ const WheelSpinner = () => {
           </div>
           
           {showResult && (
-            <div className="w-full max-w-[400px] mx-auto py-4 px-4 text-center text-2xl text-slate-900 font-medium relative animate-fade-in animate-pulse-scale">
+            <div className="w-full max-w-[400px] mx-auto py-4 px-4 text-center text-2xl text-slate-900 font-medium relative animate-[fadeIn_0.5s_ease-in,pulseScale_1s_ease-in-out]">
               The wheel has chosen:
               <strong className="block mt-2 text-3xl font-bold text-blue-600 drop-shadow-sm">
                 {result}

@@ -1,22 +1,22 @@
-// Colors for wheel sectors - updated to match the gradient theme
+// Colors for wheel sectors - spring/flowery palette
 export const COLORS = [
-  '#3b82f6', // blue-500
-  '#4f46e5', // indigo-600
-  '#6366f1', // indigo-500
-  '#8b5cf6', // violet-500
-  '#a855f7', // purple-500 
-  '#c026d3', // fuchsia-600
-  '#d946ef', // fuchsia-500
-  '#ec4899', // pink-500
-  '#f43f5e', // rose-500
-  '#ef4444', // red-500
-  '#f97316', // orange-500
-  '#6366f1', // indigo-500 (repeat to ensure enough colors)
+  '#f9a8d4', // pink-300 (light pink like cherry blossoms)
+  '#a7f3d0', // green-200 (mint/light green)
+  '#fde68a', // amber-200 (daffodil yellow)
+  '#c4b5fd', // violet-300 (lavender)
+  '#93c5fd', // blue-300 (forget-me-not blue)
+  '#86efac', // green-300 (fresh spring grass)
+  '#fdba74', // orange-300 (peach blossom)
+  '#d8b4fe', // purple-300 (lilac)
+  '#bae6fd', // sky-200 (sky blue)
+  '#fee2e2', // red-100 (soft rose)
+  '#fbcfe8', // pink-200 (pale pink like magnolia)
+  '#e9d5ff', // purple-200 (wisteria)
 ];
 
 // Default values for various settings
 export const DEFAULTS = {
-  DEFAULT_COLOR: '#6366f1', // indigo-500
+  DEFAULT_COLOR: '#a7f3d0', // green-200 as default
   MIN_SPINS: 4,
   MAX_SPINS: 6,
   SPIN_DURATION: 5000,

@@ -369,17 +369,6 @@ const WheelSpinner = () => {
             </button>
           </div>
           
-          {showResult && (
-            <div className="w-full max-w-[480px] mx-auto py-3 px-6 text-center relative bg-white/80 backdrop-blur-sm rounded-xl shadow-md opacity-0 motion-safe:animate-fade-in motion-safe:animate-pulse-once">
-              <div className="flex items-center justify-center gap-3">
-                <span className="text-slate-600 font-medium">The wheel has chosen:</span>
-                <strong className="text-2xl font-bold text-blue-600">
-                  {result}
-                </strong>
-              </div>
-            </div>
-          )}
-          
           {/* Share button */}
           <button
             onClick={copyShareableURL}

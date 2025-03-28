@@ -7,16 +7,16 @@ const SliceText = ({ text, x, y, rotation, sliceAngle }) => {
   // Improved font size calculation
   let fontSize;
   if (sliceAngle === 360) {
-    fontSize = "4.5";  // Larger font for full circle near border
+    fontSize = '4.5'; // Larger font for full circle near border
   } else if (sliceAngle > 45) {
-    fontSize = "4";    // Larger font for bigger slices
+    fontSize = '4'; // Larger font for bigger slices
   } else {
-    fontSize = "3.5";  // Larger font for smaller slices
+    fontSize = '3.5'; // Larger font for smaller slices
   }
-  
+
   // Break text into multiple lines if needed
   const words = text.split(' ');
-  
+
   // For normal display
   if (!(words.length > 1 && sliceAngle < 45 && sliceAngle !== 360)) {
     return (
@@ -29,17 +29,17 @@ const SliceText = ({ text, x, y, rotation, sliceAngle }) => {
         fontSize={fontSize}
         fontWeight="bold"
         transform={`rotate(${rotation}, ${x}, ${y})`}
-        style={{ textShadow: "0 1px 2px rgba(0,0,0,0.3)" }}
+        style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
       >
         <title>{text}</title>
         {text}
       </text>
     );
   }
-  
+
   // For text that needs to be broken into multiple lines
-  const midpoint = Math.ceil(words.length/2);
-  
+  const midpoint = Math.ceil(words.length / 2);
+
   return (
     <text
       x={x}
@@ -50,11 +50,15 @@ const SliceText = ({ text, x, y, rotation, sliceAngle }) => {
       fontSize={fontSize}
       fontWeight="bold"
       transform={`rotate(${rotation}, ${x}, ${y})`}
-      style={{ textShadow: "0 1px 2px rgba(0,0,0,0.3)" }}
+      style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
     >
       <title>{text}</title>
-      <tspan x={x} dy="-0.6em">{words.slice(0, midpoint).join(' ')}</tspan>
-      <tspan x={x} dy="1.2em">{words.slice(midpoint).join(' ')}</tspan>
+      <tspan x={x} dy="-0.6em">
+        {words.slice(0, midpoint).join(' ')}
+      </tspan>
+      <tspan x={x} dy="1.2em">
+        {words.slice(midpoint).join(' ')}
+      </tspan>
     </text>
   );
 };
@@ -62,8 +66,19 @@ const SliceText = ({ text, x, y, rotation, sliceAngle }) => {
 // Empty wheel message when no choices exist
 const EmptyWheelMessage = () => (
   <div className="flex flex-col items-center justify-center h-full w-full bg-gradient-to-br from-gray-50 to-gray-100 rounded-full text-gray-400 text-center">
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-3 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-12 w-12 mb-3 text-gray-300"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1.5}
+        d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
     </svg>
     <div className="text-xl font-medium">Add choices</div>
     <div className="text-sm mt-1 text-gray-400">to start spinning</div>
@@ -75,31 +90,24 @@ const Wheel = ({ wheelSlices, rotation, highlightIndex = -1 }) => {
   if (wheelSlices.length === 0) {
     return <EmptyWheelMessage />;
   }
-  
+
   const centerX = 50;
   const centerY = 50;
   const radius = 50;
-  
+
   return (
     <svg width="100%" height="100%" viewBox="0 0 100 100">
       {/* Center circle (optional decorative element) */}
-      <circle 
-        cx={centerX} 
-        cy={centerY} 
-        r={2} 
-        fill="white" 
-        stroke="#e5e7eb" 
-        strokeWidth="0.5" 
-      />
-      
+      <circle cx={centerX} cy={centerY} r={2} fill="white" stroke="#e5e7eb" strokeWidth="0.5" />
+
       {wheelSlices.map((slice, index) => {
         // Calculate angles in radians
         const startAngle = toRadians(slice.rotate);
         const endAngle = toRadians(slice.rotate + slice.sliceAngle);
-        
+
         // Get the path data
         const pathData = createSectorPath(centerX, centerY, radius, startAngle, endAngle);
-        
+
         // Calculate text position
         const textAngle = startAngle + toRadians(slice.sliceAngle / 2);
         let textX, textY;
@@ -107,7 +115,7 @@ const Wheel = ({ wheelSlices, rotation, highlightIndex = -1 }) => {
         if (slice.sliceAngle === 360) {
           // For full circle (single choice), position text at the top
           textX = centerX;
-          textY = centerY - (radius * 0.6);
+          textY = centerY - radius * 0.6;
         } else {
           // For normal slices, calculate position along the radius
           const textRadius = radius * 0.75;
@@ -116,18 +124,16 @@ const Wheel = ({ wheelSlices, rotation, highlightIndex = -1 }) => {
         }
 
         // Calculate rotation for text
-        const adjustedRotation = slice.sliceAngle === 360 
-          ? 0 
-          : calculateTextRotation(textAngle);
-          
+        const adjustedRotation = slice.sliceAngle === 360 ? 0 : calculateTextRotation(textAngle);
+
         // Determine if this slice is highlighted (the winner)
         const isHighlighted = index === highlightIndex;
-        
+
         // Add index number to each slice for debugging
         const middleRadius = radius * 0.4;
         const middleX = centerX + middleRadius * Math.cos(textAngle);
         const middleY = centerY + middleRadius * Math.sin(textAngle);
-        
+
         return (
           <React.Fragment key={index}>
             <path
@@ -136,7 +142,7 @@ const Wheel = ({ wheelSlices, rotation, highlightIndex = -1 }) => {
               stroke="white"
               strokeWidth="1"
               data-slice-index={index}
-              className={isHighlighted ? "filter brightness-110" : ""}
+              className={isHighlighted ? 'filter brightness-110' : ''}
             />
             {isHighlighted && (
               <path
@@ -148,7 +154,7 @@ const Wheel = ({ wheelSlices, rotation, highlightIndex = -1 }) => {
                 data-highlight="true"
               />
             )}
-            <SliceText 
+            <SliceText
               text={slice.text}
               x={textX}
               y={textY}
@@ -168,7 +174,8 @@ const Wheel = ({ wheelSlices, rotation, highlightIndex = -1 }) => {
                 transform={`rotate(${adjustedRotation}, ${middleX}, ${middleY})`}
               >
                 {index}
-              </text>)}
+              </text>
+            )}
           </React.Fragment>
         );
       })}

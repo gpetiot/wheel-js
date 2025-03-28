@@ -3,12 +3,12 @@ import Wheel from './Wheel';
 import ChoicesList from './ChoicesList';
 import DebugPanel from './DebugPanel';
 import ResultPopup from './ResultPopup';
-import { 
-  isDuplicateChoice, 
+import {
+  isDuplicateChoice,
   createChoice,
   calculateWheelSlices,
   calculateRotatedSlicePositions,
-  calculateRotatedSliceAtIndicator
+  calculateRotatedSliceAtIndicator,
 } from '../utils/wheelUtils';
 import { DEFAULTS } from '../utils/constants';
 
@@ -24,23 +24,23 @@ const WheelSpinner = () => {
   const [showDebug, setShowDebug] = useState(true); // Debug mode enabled by default
   const [showPopup, setShowPopup] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
-  
+
   // Flag to track if rotation change is from a reset (not a spin)
   const isResetRef = useRef(false);
-  
+
   // Wheel reference to handle transition end
   const wheelRef = useRef(null);
-  
+
   // Calculate wheel slices whenever choices change
   useEffect(() => {
     setWheelSlices(calculateWheelSlices(choices));
   }, [choices]);
-  
+
   // Initialize choices from URL parameters if available
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const choicesParam = urlParams.get('choices');
-    
+
     if (choicesParam) {
       try {
         // Parse JSON array from URL parameter
@@ -53,18 +53,19 @@ const WheelSpinner = () => {
       }
     }
   }, []);
-  
+
   // Copy shareable URL functionality
   const copyShareableURL = useCallback(() => {
     // Create simplified choices array with just the text
     const choicesTexts = choices.map(choice => choice.text);
-    
+
     // Create URL with encoded choices parameter
     const url = new URL(window.location.href);
     url.search = `?choices=${encodeURIComponent(JSON.stringify(choicesTexts))}`;
-    
+
     // Copy to clipboard
-    navigator.clipboard.writeText(url.toString())
+    navigator.clipboard
+      .writeText(url.toString())
       .then(() => {
         setCopySuccess(true);
         // Reset copy success message after 2 seconds
@@ -74,42 +75,45 @@ const WheelSpinner = () => {
         console.error('Failed to copy URL: ', err);
       });
   }, [choices]);
-  
+
   // Choice management handlers
-  const handleChoiceAdd = useCallback((text) => {
-    if (isDuplicateChoice(text, choices)) {
-      return false; // Don't add duplicate
-    }
-    
-    // Apply no-transition class directly with inline style
-    if (wheelRef.current) {
-      const children = wheelRef.current.querySelectorAll('*');
-      children.forEach(child => {
-        child.style.transition = 'none';
-      });
-    }
-    
-    setChoices(prevChoices => [...prevChoices, createChoice(text)]);
-    
-    // Mark this rotation change as a reset, not a spin
-    isResetRef.current = true;
-    setRotation(0); // Reset rotation
-    
-    // Remove the inline styles after a short delay
-    setTimeout(() => {
+  const handleChoiceAdd = useCallback(
+    text => {
+      if (isDuplicateChoice(text, choices)) {
+        return false; // Don't add duplicate
+      }
+
+      // Apply no-transition class directly with inline style
       if (wheelRef.current) {
         const children = wheelRef.current.querySelectorAll('*');
         children.forEach(child => {
-          child.style.transition = '';
+          child.style.transition = 'none';
         });
       }
-    }, 50);
-    
-    return true;
-  }, [choices]);
-  
-  const handleChoiceEdit = useCallback((index) => {
-    setChoices(prevChoices => 
+
+      setChoices(prevChoices => [...prevChoices, createChoice(text)]);
+
+      // Mark this rotation change as a reset, not a spin
+      isResetRef.current = true;
+      setRotation(0); // Reset rotation
+
+      // Remove the inline styles after a short delay
+      setTimeout(() => {
+        if (wheelRef.current) {
+          const children = wheelRef.current.querySelectorAll('*');
+          children.forEach(child => {
+            child.style.transition = '';
+          });
+        }
+      }, 50);
+
+      return true;
+    },
+    [choices]
+  );
+
+  const handleChoiceEdit = useCallback(index => {
+    setChoices(prevChoices =>
       prevChoices.map((choice, i) => {
         if (i === index) {
           return { ...choice, editing: true };
@@ -121,34 +125,34 @@ const WheelSpinner = () => {
       })
     );
   }, []);
-  
+
   const handleChoiceUpdate = useCallback((index, newText) => {
     setChoices(prevChoices => {
       const updatedChoices = [...prevChoices];
       const trimmedText = newText.trim();
-      
+
       // If text is empty, just turn off editing
       if (!trimmedText) {
         updatedChoices[index] = { ...updatedChoices[index], editing: false };
         return updatedChoices;
       }
-      
+
       // Check for duplicates
       if (isDuplicateChoice(trimmedText, prevChoices, index)) {
         updatedChoices[index] = { ...updatedChoices[index], editing: false };
         return updatedChoices;
       }
-      
+
       // Update text and turn off editing
-      updatedChoices[index] = { 
+      updatedChoices[index] = {
         ...updatedChoices[index],
         text: trimmedText,
-        editing: false
+        editing: false,
       };
-      
+
       return updatedChoices;
     });
-    
+
     // Apply no-transition class directly with inline style
     if (wheelRef.current) {
       const children = wheelRef.current.querySelectorAll('*');
@@ -156,11 +160,11 @@ const WheelSpinner = () => {
         child.style.transition = 'none';
       });
     }
-    
+
     // Mark this rotation change as a reset, not a spin
     isResetRef.current = true;
     setRotation(0); // Reset rotation
-    
+
     // Remove the inline styles after a short delay
     setTimeout(() => {
       if (wheelRef.current) {
@@ -171,10 +175,10 @@ const WheelSpinner = () => {
       }
     }, 50);
   }, []);
-  
-  const handleChoiceDelete = useCallback((index) => {
+
+  const handleChoiceDelete = useCallback(index => {
     setChoices(prevChoices => prevChoices.filter((_, i) => i !== index));
-    
+
     // Apply no-transition class directly with inline style
     if (wheelRef.current) {
       const children = wheelRef.current.querySelectorAll('*');
@@ -182,11 +186,11 @@ const WheelSpinner = () => {
         child.style.transition = 'none';
       });
     }
-    
+
     // Mark this rotation change as a reset, not a spin
     isResetRef.current = true;
     setRotation(0); // Reset rotation
-    
+
     // Remove the inline styles after a short delay
     setTimeout(() => {
       if (wheelRef.current) {
@@ -197,97 +201,99 @@ const WheelSpinner = () => {
       }
     }, 50);
   }, []);
-  
+
   // Spinning functionality
   const spinWheel = useCallback(() => {
     // Don't spin if already spinning or if there are no choices
     if (isSpinning || choices.length === 0) return;
-    
+
     // Reset states
     setIsSpinning(true);
     setResult('');
     setResultIndex(-1);
     setShowResult(false);
-    
+
     // This is a real spin, not a reset
     isResetRef.current = false;
-    
+
     // Calculate random rotation - ALWAYS POSITIVE for clockwise rotation
-    const randomSpins = DEFAULTS.MIN_SPINS + Math.random() * (DEFAULTS.MAX_SPINS - DEFAULTS.MIN_SPINS);
-    const newRotation = rotation + (randomSpins * 360); // Positive = clockwise
-    
+    const randomSpins =
+      DEFAULTS.MIN_SPINS + Math.random() * (DEFAULTS.MAX_SPINS - DEFAULTS.MIN_SPINS);
+    const newRotation = rotation + randomSpins * 360; // Positive = clockwise
+
     // Apply the rotation visually (this will animate in CSS)
     setRotation(newRotation);
-    
+
     // The actual result will be calculated when the transition ends
     // (see the useEffect that handles the transitionend event)
   }, [isSpinning, choices.length, rotation]);
-  
+
   // Function to calculate all slices' positions for the debug panel
   const getRotatedSlicePositions = useCallback(() => {
     const positions = calculateRotatedSlicePositions(wheelSlices, rotation);
-    
+
     // Format the positions for display
     return positions.map(pos => ({
       ...pos,
       startAngle: pos.startAngle.toFixed(2),
-      endAngle: pos.endAngle.toFixed(2)
+      endAngle: pos.endAngle.toFixed(2),
     }));
   }, [rotation, wheelSlices]);
-  
+
   // Handle transition end to calculate the result when wheel stops spinning
   useEffect(() => {
     const wheelElement = wheelRef.current;
-    
+
     const handleTransitionEnd = () => {
       // Skip result calculation if this was just a reset, not a spin
       if (!isSpinning || isResetRef.current) {
         isResetRef.current = false;
         return;
       }
-      
+
       // Calculate the winning slice based on the current wheel position
       const positions = calculateRotatedSlicePositions(wheelSlices, rotation);
       const winningIndex = calculateRotatedSliceAtIndicator(positions);
       setResultIndex(winningIndex);
-      
+
       // Get the result text from the winning slice (if valid)
-      const resultText = winningIndex >= 0 && winningIndex < wheelSlices.length 
-        ? wheelSlices[winningIndex].text 
-        : 'No result';
-      
+      const resultText =
+        winningIndex >= 0 && winningIndex < wheelSlices.length
+          ? wheelSlices[winningIndex].text
+          : 'No result';
+
       // Update states to show result
       setResult(resultText);
       setShowResult(true);
       setIsSpinning(false);
-      
+
       // Show the result popup
       setShowPopup(true);
     };
-    
+
     if (wheelElement) {
       wheelElement.addEventListener('transitionend', handleTransitionEnd);
     }
-    
+
     return () => {
       if (wheelElement) {
         wheelElement.removeEventListener('transitionend', handleTransitionEnd);
       }
     };
   }, [rotation, isSpinning, wheelSlices]);
-  
+
   // Close popup handler
   const handleClosePopup = useCallback(() => {
     setShowPopup(false);
   }, []);
-  
+
   // Update debug info during animation
   useEffect(() => {
     if (!showDebug || !isSpinning) return;
 
     // Use requestAnimationFrame to update debug panel during spin
     let animationFrameId;
-    
+
     const updateDebug = () => {
       if (isSpinning) {
         // Force a re-render to update debug info
@@ -296,16 +302,16 @@ const WheelSpinner = () => {
         animationFrameId = requestAnimationFrame(updateDebug);
       }
     };
-    
+
     animationFrameId = requestAnimationFrame(updateDebug);
-    
+
     return () => {
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
     };
   }, [isSpinning, showDebug]);
-  
+
   return (
     <div className="max-w-[1500px] mx-auto p-4 md:p-8 transition-all duration-300">
       <h1 className="text-center mb-16 md:mb-20 mt-0 relative">
@@ -315,12 +321,15 @@ const WheelSpinner = () => {
         <div className="absolute w-24 h-1 bg-blue-600 bottom-[-16px] left-1/2 -translate-x-1/2 rounded-full"></div>
         <div className="absolute w-12 h-1 bg-blue-600/70 bottom-[-24px] left-1/2 -translate-x-1/2 rounded-full"></div>
       </h1>
-      
-      <div className={`flex flex-col md:flex-row transition-all duration-300 ${showDebug ? 'ml-[350px] md:ml-[100px] lg:ml-[50px]' : 'ml-0'}`}>
+
+      <div
+        className={`flex flex-col md:flex-row transition-all duration-300 ${showDebug ? 'ml-[350px] md:ml-[100px] lg:ml-[50px]' : 'ml-0'}`}
+      >
         {/* Wheel Section */}
         <div className="flex flex-col items-center gap-6 md:w-1/2 md:pr-8">
           <div className="relative w-full max-w-[480px] aspect-square mx-auto">
-            <div className="absolute top-1/2 right-[-16px] -translate-y-1/2 w-0 h-0 
+            <div
+              className="absolute top-1/2 right-[-16px] -translate-y-1/2 w-0 h-0 
               border-t-[15px] border-t-transparent 
               border-b-[15px] border-b-transparent 
               border-r-[30px] border-r-rose-500
@@ -328,22 +337,25 @@ const WheelSpinner = () => {
               before:absolute before:content-[''] before:right-[-32px] before:top-[-17px] 
               before:border-t-[17px] before:border-t-transparent 
               before:border-b-[17px] before:border-b-transparent 
-              before:border-r-[34px] before:border-r-white/50"></div>
-            <div 
+              before:border-r-[34px] before:border-r-white/50"
+            ></div>
+            <div
               ref={wheelRef}
               className="w-full h-full rounded-full overflow-hidden relative shadow-lg will-change-transform"
-              style={{ 
+              style={{
                 transform: `rotate(${rotation}deg)`,
-                transition: isResetRef.current ? "none" : "transform 5s cubic-bezier(0.2, 0.8, 0.2, 1)"
+                transition: isResetRef.current
+                  ? 'none'
+                  : 'transform 5s cubic-bezier(0.2, 0.8, 0.2, 1)',
               }}
             >
-              <Wheel 
-                wheelSlices={wheelSlices} 
-                rotation={rotation} 
-                highlightIndex={showResult ? resultIndex : -1} 
+              <Wheel
+                wheelSlices={wheelSlices}
+                rotation={rotation}
+                highlightIndex={showResult ? resultIndex : -1}
               />
             </div>
-            <button 
+            <button
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 py-4 px-8 
               bg-rose-500 hover:bg-rose-600
               text-white font-bold text-2xl rounded-full 
@@ -357,18 +369,34 @@ const WheelSpinner = () => {
             >
               {isSpinning ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Spinning...
                 </>
               ) : (
-                "SPIN"
+                'SPIN'
               )}
             </button>
           </div>
-          
+
           {/* Share button */}
           <button
             onClick={copyShareableURL}
@@ -379,25 +407,47 @@ const WheelSpinner = () => {
           >
             {copySuccess ? (
               <>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
                 Copied!
               </>
             ) : (
               <>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                  />
                 </svg>
                 Copy Shareable URL
               </>
             )}
           </button>
         </div>
-        
+
         {/* Choices List */}
         <div className="md:w-1/2 md:pl-10 lg:pl-12 md:border-l border-gray-200 mt-16 md:mt-0">
-          <ChoicesList 
+          <ChoicesList
             choices={choices}
             onChoiceEdit={handleChoiceEdit}
             onChoiceUpdate={handleChoiceUpdate}
@@ -407,7 +457,7 @@ const WheelSpinner = () => {
           />
         </div>
       </div>
-      
+
       {/* Debug Panel - now rendered outside the main layout */}
       {DEFAULTS.DEBUG && (
         <DebugPanel
@@ -422,9 +472,9 @@ const WheelSpinner = () => {
           isVisible={showDebug}
         />
       )}
-      
+
       {/* Result Popup with Confetti */}
-      <ResultPopup 
+      <ResultPopup
         result={result}
         show={showPopup}
         sliceColor={wheelSlices[resultIndex]?.color}

@@ -10,24 +10,24 @@ export function getSliceAtIndicator(wheelSlices, rotation) {
   // Normalize rotation to be between 0 and 360 degrees
   let normalizedRotation = rotation % 360;
   if (normalizedRotation < 0) normalizedRotation += 360;
-  
+
   // No slices case
   if (wheelSlices.length === 0) return { text: '', index: -1 };
-  
+
   // Single slice case
   if (wheelSlices.length === 1) return { text: wheelSlices[0].text, index: 0 };
-  
+
   // Check each slice to see which one contains the indicator (0°)
   for (let i = 0; i < wheelSlices.length; i++) {
     const slice = wheelSlices[i];
-    
+
     // Calculate slice position after rotation
     // Formula: (original position - rotation) to account for clockwise movement
     let sliceStartAngle = (slice.rotate - normalizedRotation) % 360;
     if (sliceStartAngle < 0) sliceStartAngle += 360;
-    
+
     let sliceEndAngle = (sliceStartAngle + slice.sliceAngle) % 360;
-    
+
     // Check if indicator (0°) is within this slice
     if (sliceStartAngle <= sliceEndAngle) {
       // Normal case: slice doesn't cross the 0/360 boundary
@@ -41,7 +41,7 @@ export function getSliceAtIndicator(wheelSlices, rotation) {
       }
     }
   }
-  
+
   return { text: wheelSlices[0].text, index: 0 }; // Fallback to first slice
 }
 
@@ -56,19 +56,19 @@ export function sliceContainsZeroDegree(slice, rotation) {
   if (slice.sliceAngle >= 360) {
     return true;
   }
-  
+
   let startAngle = (slice.rotate - rotation) % 360;
   if (startAngle < 0) startAngle += 360;
-  
+
   let endAngle = (startAngle + slice.sliceAngle) % 360;
-  
+
   // Check if 0° is within this slice
   if (startAngle <= endAngle) {
     // Normal case: slice doesn't cross the 0/360 boundary
-    return (0 >= startAngle && 0 < endAngle);
+    return 0 >= startAngle && 0 < endAngle;
   } else {
     // Edge case: slice crosses the 0/360 boundary
-    return (0 >= startAngle || 0 < endAngle);
+    return 0 >= startAngle || 0 < endAngle;
   }
 }
 
@@ -81,14 +81,14 @@ export function sliceContainsZeroDegree(slice, rotation) {
 export function calculateSlicePosition(slice, rotation) {
   let startAngle = (slice.rotate - rotation) % 360;
   if (startAngle < 0) startAngle += 360;
-  
+
   // Special case: if the slice angle is 360°, set endAngle to 360
   if (slice.sliceAngle >= 360) {
     return { startAngle, endAngle: 360 };
   }
-  
+
   let endAngle = (startAngle + slice.sliceAngle) % 360;
-  
+
   return { startAngle, endAngle };
 }
 
@@ -100,7 +100,10 @@ export const commonTestCases = [
   { name: 'Two choices', choices: ['Option 1', 'Option 2'] },
   { name: 'Three choices', choices: ['Option 1', 'Option 2', 'Option 3'] },
   { name: 'Four choices', choices: ['Option 1', 'Option 2', 'Option 3', 'Option 4'] },
-  { name: 'Six choices', choices: ['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 5', 'Option 6'] }
+  {
+    name: 'Six choices',
+    choices: ['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 5', 'Option 6'],
+  },
 ];
 
 /**
@@ -129,7 +132,7 @@ export function verifyResult(result, wheelSlices, rotation, expect) {
   // Verify the result is valid
   expect(result.index).toBeGreaterThanOrEqual(0);
   expect(result.index).toBeLessThan(wheelSlices.length);
-  
+
   // Verify that the winning slice contains 0°
   const winningSlice = wheelSlices[result.index];
   expect(sliceContainsZeroDegree(winningSlice, rotation)).toBe(true);

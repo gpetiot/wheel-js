@@ -21,5 +21,5 @@ export const DEFAULTS = {
   MAX_SPINS: 6,
   SPIN_DURATION: 5000,
   MIN_CHOICES_FOR_SINGLE_SLICES: 6,
-  DEBUG: false // Global debug setting
-}; 
+  DEBUG: false, // Global debug setting
+};

@@ -1,0 +1,14 @@
+# Build files
+build/
+dist/
+
+# Dependencies
+node_modules/
+
+# Generated files
+*.generated.js
+*.generated.jsx
+
+# Other
+.git/
+coverage/ 

@@ -12,20 +12,25 @@ const SliceText = ({ text, x, y, rotation, sliceAngle }) => {
   // Break text into multiple lines if needed
   const words = text.split(' ');
 
+  // Common text attributes
+  const textProps = {
+    x,
+    y,
+    textAnchor: 'middle',
+    dominantBaseline: 'middle',
+    fontSize,
+    fontWeight: 'bold',
+    transform: `rotate(${rotation}, ${x}, ${y})`,
+    stroke: 'white',
+    strokeWidth: '0.5',
+    fill: 'black',
+    paintOrder: 'stroke',
+  };
+
   // For normal display
   if (!(words.length > 1 && sliceAngle < 45 && sliceAngle !== 360)) {
     return (
-      <text
-        x={x}
-        y={y}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fill="white"
-        fontSize={fontSize}
-        fontWeight="bold"
-        transform={`rotate(${rotation}, ${x}, ${y})`}
-        style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
-      >
+      <text {...textProps}>
         <title>{text}</title>
         {text}
       </text>
@@ -36,17 +41,7 @@ const SliceText = ({ text, x, y, rotation, sliceAngle }) => {
   const midpoint = Math.ceil(words.length / 2);
 
   return (
-    <text
-      x={x}
-      y={y}
-      textAnchor="middle"
-      dominantBaseline="middle"
-      fill="white"
-      fontSize={fontSize}
-      fontWeight="bold"
-      transform={`rotate(${rotation}, ${x}, ${y})`}
-      style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
-    >
+    <text {...textProps}>
       <title>{text}</title>
       <tspan x={x} dy="-0.6em">
         {words.slice(0, midpoint).join(' ')}

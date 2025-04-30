@@ -317,17 +317,19 @@ const WheelSpinner = () => {
 
   return (
     <div className="max-w-[1500px] mx-auto p-4 md:p-8 transition-all duration-300">
-      <h1 className="text-center mb-16 md:mb-20 mt-0">
-        <span className="text-5xl md:text-6xl font-black tracking-tighter text-blue-600">
+      <h1 className="text-center mb-8 md:mb-16 mt-0">
+        <span className="text-4xl md:text-6xl font-black tracking-tighter text-blue-600">
           Wheel Spinner
         </span>
       </h1>
 
       <div
-        className={`flex flex-col md:flex-row transition-all duration-300 ${showDebug ? 'ml-[350px] md:ml-[100px] lg:ml-[50px]' : 'ml-0'}`}
+        className={`flex flex-col md:flex-row transition-all duration-300 ${
+          showDebug ? 'md:ml-[350px]' : 'ml-0'
+        }`}
       >
         {/* Wheel Section */}
-        <div className="flex flex-col items-center gap-6 md:w-1/2 md:pr-8">
+        <div className="flex flex-col items-center gap-6 w-full md:w-1/2 md:pr-8">
           <div className="relative w-full max-w-[480px] aspect-square mx-auto">
             <WheelIndicator />
             <div
@@ -362,7 +364,7 @@ const WheelSpinner = () => {
         </div>
 
         {/* Choices List */}
-        <div className="md:w-1/2 md:pl-10 lg:pl-12 md:border-l border-gray-200 mt-16 md:mt-0">
+        <div className="w-full md:w-1/2 md:pl-8 lg:pl-12 md:border-l border-gray-200 mt-8 md:mt-0">
           <ChoicesList
             choices={choices}
             onChoiceEdit={handleChoiceEdit}

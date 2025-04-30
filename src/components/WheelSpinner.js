@@ -354,13 +354,6 @@ const WheelSpinner = () => {
               disabled={isSpinning || choices.length === 0}
             />
           </div>
-
-          {/* Share button */}
-          <ShareButton
-            onClick={copyShareableURL}
-            copySuccess={copySuccess}
-            disabled={choices.length === 0}
-          />
         </div>
 
         {/* Choices List */}
@@ -373,6 +366,15 @@ const WheelSpinner = () => {
             onChoiceAdd={handleChoiceAdd}
             wheelSlices={wheelSlices}
           />
+
+          {/* Share button - moved to bottom of choices list */}
+          <div className="mt-6 flex justify-end">
+            <ShareButton
+              onClick={copyShareableURL}
+              copySuccess={copySuccess}
+              disabled={choices.length === 0}
+            />
+          </div>
         </div>
       </div>
 

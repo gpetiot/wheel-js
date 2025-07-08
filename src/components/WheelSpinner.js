@@ -319,7 +319,7 @@ const WheelSpinner = () => {
     <div className="max-w-[1500px] mx-auto p-4 md:p-8 transition-all duration-300">
       <h1 className="text-center mb-8 md:mb-16 mt-0">
         <span className="text-4xl md:text-6xl font-black tracking-tighter text-blue-600">
-          Wheel Spinner
+          Spin the Wheel!
         </span>
       </h1>
 

@@ -7,13 +7,14 @@ const Footer = () => {
         <div className="text-center text-sm text-gray-600">
           © {new Date().getFullYear()} wheel-js
           <span className="mx-2">-</span>
+          View source on
           <a
             href="https://github.com/gpetiot/wheel-js"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-500 hover:text-gray-700 transition-colors duration-200"
           >
-            Source on GitHub
+            GitHub
           </a>
         </div>
       </div>

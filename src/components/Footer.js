@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="text-center text-sm text-gray-600">
           © {new Date().getFullYear()} wheel-js
           <span className="mx-2">-</span>
-          View source on
+          View source on{' '}
           <a
             href="https://github.com/gpetiot/wheel-js"
             target="_blank"
